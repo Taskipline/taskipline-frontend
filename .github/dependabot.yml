@@ -9,3 +9,15 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Africa/Lagos"
+    reviewers:
+      - "Emmy-Akintz"
+    labels:
+      - "npm dependencies"
+    commit-message:
+      prefix: "npm"
+      include: "scope"
+    open-pull-requests-limit: 30
+    target-branch: "preview"

@@ -6,6 +6,8 @@ export default function Button({
   children: React.ReactNode
   //   onClick: () => void;
   className?: string
+  size?: 'sm' | 'md' | 'lg'
+  variant?: 'primary' | 'secondary' | 'tertiary'
 }) {
   return (
     <button

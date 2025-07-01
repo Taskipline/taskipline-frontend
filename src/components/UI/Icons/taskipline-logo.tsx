@@ -1,4 +1,7 @@
+// 'use client'
+
 import { IconTypes } from '@/types/icon'
+// import { useTheme } from 'next-themes'
 
 export default function TaskiplineLogo({
   width = 16,
@@ -6,6 +9,8 @@ export default function TaskiplineLogo({
   size,
   className = '',
 }: IconTypes) {
+  //   const { theme } = useTheme()
+  //   console.log('Current theme:', theme)
   return (
     <svg
       width={size || width}

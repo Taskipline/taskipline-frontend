@@ -3,6 +3,7 @@ import { Button } from '../UI/button'
 import TaskiplineLogo from '../UI/Icons/taskipline-logo'
 import { Sheet, SheetContent, SheetTrigger } from '../UI/sheet'
 import { Menu } from 'lucide-react'
+import { ModeToggle } from '../mode-toggle'
 
 export default function WaitlistHeader() {
   return (
@@ -39,6 +40,7 @@ export default function WaitlistHeader() {
           <Button asChild>
             <Link href="/login">Login</Link>
           </Button>
+          <ModeToggle />
         </div>
 
         {/* Mobile Navigation */}
@@ -47,6 +49,7 @@ export default function WaitlistHeader() {
             <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle menu</span>
+              <ModeToggle />
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] sm:w-[400px]">

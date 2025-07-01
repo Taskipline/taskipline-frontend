@@ -2,6 +2,15 @@
   "name": "taskipline",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "description": "Taskipline frontend application",
+  "keywords": [
+    "taskipline",
+    "frontend",
+    "nextjs",
+    "react",
+    "turbopack"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

@@ -12,9 +12,27 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+// todo: adjust the icons
+
 export const metadata: Metadata = {
   title: 'Taskipline',
   description: 'Building discipline with taskipline',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+    other: [
+      {
+        rel: 'icon',
+        url: '/favicon-16x16.png',
+        sizes: '16x16',
+      },
+      {
+        rel: 'icon',
+        url: '/favicon-32x32.png',
+        sizes: '32x32',
+      },
+    ],
+  },
 }
 
 export default function RootLayout({

@@ -1,13 +1,13 @@
+import React from 'react'
+
 export default function Button({
   children,
-  //   onClick,
+  onClick,
   className = '',
 }: {
   children: React.ReactNode
-  //   onClick: () => void;
+  onClick: () => void
   className?: string
-  size?: 'sm' | 'md' | 'lg'
-  variant?: 'primary' | 'secondary' | 'tertiary'
 }) {
   return (
     <button

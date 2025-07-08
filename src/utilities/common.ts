@@ -1,3 +1,5 @@
+import toast from 'react-hot-toast'
+
 export function validateEmail(email: string): boolean {
   // Simple regex for validating email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -42,3 +44,26 @@ export function validateDate(date: string): boolean {
 export const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 0
 export const screenHeight =
   typeof window !== 'undefined' ? window.innerHeight : 0
+
+export const notify = (type: 'success' | 'error' | 'info', message: string) => {
+  switch (type) {
+    case 'success':
+      toast.success(message)
+      break
+    case 'error':
+      toast.error(message)
+      break
+    case 'info':
+      toast(message, {
+        icon: 'ℹ️',
+        style: {
+          background: '#f0f0f0',
+          color: '#333',
+        },
+      })
+      break
+    default:
+      toast(message)
+      break
+  }
+}

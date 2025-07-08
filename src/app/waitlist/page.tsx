@@ -6,15 +6,38 @@ import { Input } from '@/components/UI/input'
 import Image from 'next/image'
 import waitlistImage from '@/components/UI/Images/waitlist.png'
 import { useState } from 'react'
-import { validateEmail } from '@/utilities/common'
+import { notify, validateEmail } from '@/utilities/common'
+import { joinWaitlist } from '@/services/waitlistService'
+import { Loader } from 'lucide-react'
+import { ApiError } from '@/lib/errors'
 
 export default function LandingPageLayout() {
   const [email, setEmail] = useState('')
-  console.log('Email:', email)
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission logic here
-    console.log('Form submitted with email:', email)
+    setLoading(true)
+
+    try {
+      const response = await joinWaitlist(email)
+      notify('success', response.message || 'Successfully joined waitlist!')
+      setEmail('')
+      console.log('Waitlist JSON response:', response)
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 409) {
+        notify('info', 'You are already on the waitlist.')
+        console.error('Error joining waitlist: Email already exists (409)')
+      } else if (err instanceof Error) {
+        notify('error', err.message || 'Error joining waitlist')
+        console.error('Error joining waitlist:', err.message)
+      } else {
+        notify('error', 'An unknown error occurred')
+        console.error('Unknown error:', err)
+      }
+    } finally {
+      setLoading(false)
+    }
   }
   return (
     <div>
@@ -36,15 +59,14 @@ export default function LandingPageLayout() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            disabled
           />
           <Button
             className="mx-auto text-white"
             variant="secondary"
             onClick={handleSubmit}
-            disabled={validateEmail(email) ? false : true}
+            disabled={!validateEmail(email) || loading}
           >
-            Join Waitlist
+            {loading ? <Loader className="animate-spin" /> : 'Join Waitlist'}
           </Button>
         </div>
       </div>

@@ -4,11 +4,7 @@ import waitlistImage from '@/components/UI/Images/home.png'
 import Header from '@/components/UI/header'
 import { CustomHomeCard } from '@/components/UI/card'
 import { Calendar1, Gamepad2, Goal, List, NotebookPen } from 'lucide-react'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/UI/popover'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -31,17 +27,9 @@ export default function Home() {
               <CustomHomeCard key={index} icon={perk.icon} text={perk.text} />
             ))}
           </div>
-          {/* <Button className="mx-auto text-white" variant="secondary">
+          <Button className="mx-auto text-white" variant="secondary">
             <Link href="/waitlist">Join Waitlist</Link>
-          </Button> */}
-          <Popover>
-            <PopoverTrigger>
-              <Button className="mx-auto text-white" variant="secondary">
-                Join Waitlist
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent>Coming soon.</PopoverContent>
-          </Popover>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
-import { Button } from '@/components/UI/button'
+import { Button } from '@/components/ui/button'
 import Image from 'next/image'
-import waitlistImage from '@/components/UI/Images/home.png'
-import Header from '@/components/UI/header'
-import { CustomHomeCard } from '@/components/UI/card'
+import waitlistImage from '@/components/ui/Images/home.png'
+import Header from '@/components/header'
+import { CustomHomeCard } from '@/components/ui/card'
 import { Calendar1, Gamepad2, Goal, List, NotebookPen } from 'lucide-react'
 import Link from 'next/link'
 

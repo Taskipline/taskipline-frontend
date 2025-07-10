@@ -20,7 +20,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
 
 export { Input }
 
-import { Label } from '@/components/UI/label'
+import { Label } from '@/components/ui/label'
 import { EyeClosedIcon, EyeIcon } from 'lucide-react'
 import { Button } from './button'
 

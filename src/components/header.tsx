@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { Button } from './button'
-import TaskiplineLogo from './Icons/taskipline-logo'
-import { Sheet, SheetContent, SheetTrigger } from './sheet'
+import { Button } from './ui/button'
+import TaskiplineLogo from './ui/Icons/taskipline-logo'
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 import { Menu } from 'lucide-react'
-import { ModeToggle } from '../mode-toggle'
+import { ModeToggle } from './mode-toggle'
 import { usePathname } from 'next/navigation'
 
 export default function Header({ auth = false }: { auth?: boolean }) {

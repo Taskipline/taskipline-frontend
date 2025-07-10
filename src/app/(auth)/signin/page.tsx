@@ -1,9 +1,9 @@
 'use client'
 
-import { Button } from '@/components/UI/button'
-import { CustomInput } from '@/components/UI/input'
-import { Label } from '@/components/UI/label'
-import Title from '@/components/UI/title'
+import { Button } from '@/components/ui/button'
+import { CustomInput } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import Title from '@/components/title'
 import { notify } from '@/utilities/common'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -16,7 +16,7 @@ export default function Login() {
 
   const handleSignin = async () => {
     notify('success', 'login successful')
-    router.push('/signin#dashboard')
+    router.push('/dashboard')
   }
   return (
     <div className="grid gap-6">

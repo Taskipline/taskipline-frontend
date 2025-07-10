@@ -1,19 +1,44 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from './button'
 import TaskiplineLogo from './Icons/taskipline-logo'
 import { Sheet, SheetContent, SheetTrigger } from './sheet'
 import { Menu } from 'lucide-react'
 import { ModeToggle } from '../mode-toggle'
+import { usePathname } from 'next/navigation'
 
-export default function Header() {
+export default function Header({ auth = false }: { auth?: boolean }) {
+  const pathName = usePathname()
+  if (auth) {
+    return (
+      <header className="sticky top-0 z-50 w-full px-6 border-b border-b-primary bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between md:relative">
+          <TextAndLogo />
+          <div className="flex items-center gap-2">
+            {pathName === '/signup' ? (
+              <Button asChild>
+                <Link href="/signin">Sign In</Link>
+              </Button>
+            ) : (
+              pathName === '/signin' && (
+                <Button asChild>
+                  <Link href="/signup">Signup</Link>
+                </Button>
+              )
+            )}
+            <ModeToggle />
+          </div>
+        </div>
+      </header>
+    )
+  }
+
   return (
-    <header className="sticky top-0 z-50 w-full px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full px-6 border-b border-b-primary bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between md:relative">
         {/* Logo and Text - Left Side */}
-        <Link href="/" className="flex items-center space-x-2">
-          <TaskiplineLogo />
-          <span className="font-bold text-xl">Taskipline</span>
-        </Link>
+        <TextAndLogo />
 
         {/* Desktop Navigation - Right Side */}
         <div className="hidden md:flex md:absolute right-0 items-center space-x-6">
@@ -37,14 +62,8 @@ export default function Header() {
               Resources
             </Link>
           </nav>
-          <Button
-            // asChild
-            disabled
-          >
-            <Link href="#login">
-              {/* Login */}
-              Coming soon
-            </Link>
+          <Button asChild>
+            <Link href="/signin">Sign In</Link>
           </Button>
           <ModeToggle />
         </div>
@@ -79,15 +98,8 @@ export default function Header() {
                   Resources
                 </Link>
                 <div className="pt-4">
-                  <Button
-                    // asChild
-                    className="w-full"
-                    disabled
-                  >
-                    <Link href="#login">
-                      {/* Login */}
-                      Coming soon
-                    </Link>
+                  <Button asChild className="w-full">
+                    <Link href="/signin">Sign In</Link>
                   </Button>
                 </div>
               </nav>
@@ -97,5 +109,14 @@ export default function Header() {
         </div>
       </div>
     </header>
+  )
+}
+
+function TextAndLogo() {
+  return (
+    <Link href="/" className="flex items-center space-x-2">
+      <TaskiplineLogo />
+      <span className="font-bold text-xl">Taskipline</span>
+    </Link>
   )
 }

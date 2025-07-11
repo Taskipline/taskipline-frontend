@@ -12,7 +12,7 @@ export default function Header({ auth = false }: { auth?: boolean }) {
   const pathName = usePathname()
   if (auth) {
     return (
-      <header className="sticky top-0 z-50 w-full px-6 border-b border-b-primary bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between md:relative">
           <TextAndLogo />
           <div className="flex items-center gap-2">
@@ -35,7 +35,7 @@ export default function Header({ auth = false }: { auth?: boolean }) {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full px-6 border-b border-b-primary bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full px-6 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between md:relative">
         {/* Logo and Text - Left Side */}
         <TextAndLogo />

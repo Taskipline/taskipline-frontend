@@ -1,3 +1,9 @@
+import Title from '@/components/title'
+
 export default function Notes() {
-  return <div>notes</div>
+  return (
+    <div>
+      <Title text="Notes & Reflection" />
+    </div>
+  )
 }

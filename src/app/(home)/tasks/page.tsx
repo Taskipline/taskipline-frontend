@@ -1,3 +1,9 @@
+import Title from '@/components/title'
+
 export default function Tasks() {
-  return <div>tasks</div>
+  return (
+    <div>
+      <Title text="Tasks" />
+    </div>
+  )
 }

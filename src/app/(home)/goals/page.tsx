@@ -1,3 +1,9 @@
+import Title from '@/components/title'
+
 export default function Goals() {
-  return <div>goals</div>
+  return (
+    <div>
+      <Title text="Goals" />
+    </div>
+  )
 }

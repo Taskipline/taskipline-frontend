@@ -44,6 +44,10 @@ export function validateDate(date: string): boolean {
 export const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 0
 export const screenHeight =
   typeof window !== 'undefined' ? window.innerHeight : 0
+export const isMobile = screenWidth < 768
+export const isTablet = screenWidth >= 768 && screenWidth < 1024
+export const isDesktop = screenWidth >= 1024 && screenWidth < 1280
+export const isLargeScreen = screenWidth >= 1280
 
 export const notify = (type: 'success' | 'error' | 'info', message: string) => {
   switch (type) {

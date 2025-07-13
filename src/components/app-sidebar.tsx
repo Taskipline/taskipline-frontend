@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { Calendar, Goal, Home, List, NotebookPen, Settings } from 'lucide-react'
+import { Goal, Home, List, Settings } from 'lucide-react'
 import Link from 'next/link'
 import Title from './title'
 import { usePathname } from 'next/navigation'
@@ -28,16 +28,16 @@ const items = [
     url: '/tasks',
     icon: List,
   },
-  {
-    title: 'Calendar',
-    url: '/calendar',
-    icon: Calendar,
-  },
-  {
-    title: 'Notes',
-    url: '/notes',
-    icon: NotebookPen,
-  },
+  // {
+  //   title: 'Calendar',
+  //   url: '/calendar',
+  //   icon: Calendar,
+  // },
+  // {
+  //   title: 'Notes',
+  //   url: '/notes',
+  //   icon: NotebookPen,
+  // },
   {
     title: 'Goals',
     url: '/goals',

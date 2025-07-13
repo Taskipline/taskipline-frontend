@@ -30,10 +30,10 @@ export default function Signup() {
       <div className="grid gap-4 w-sm mx-auto">
         <div className="flex gap-x-4">
           <CustomInput
-            htmlFor="firstName"
+            htmlFor="first-name"
             placeholder="Enter your first name"
           />
-          <CustomInput htmlFor="lastName" placeholder="Enter your last name" />
+          <CustomInput htmlFor="last-name" placeholder="Enter your last name" />
         </div>
         <CustomInput htmlFor="email" placeholder="Enter your email" />
         <CustomInput

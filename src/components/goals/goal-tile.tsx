@@ -14,8 +14,8 @@ export default function GoalTile({
       className="grid gap-2 p-4 hover:bg-accent-foreground/10 rounded-lg transition-colors"
     >
       <div className="flex items-center justify-between">
-        <h3>{title}</h3>
-        <p>{progress}%</p>
+        <h3 className="font-medium text-base leading-7">{title}</h3>
+        <p className="text-sm leading-[21px]">{progress}%</p>
       </div>
       <Progress value={progress} />
     </Link>

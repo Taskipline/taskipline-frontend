@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Progress } from '../ui/progress'
 
 export default function GoalTile({
   title,
@@ -16,12 +17,7 @@ export default function GoalTile({
         <h3>{title}</h3>
         <p>{progress}%</p>
       </div>
-      <div className="bg-secondary h-2 rounded-full w-full overflow-hidden">
-        <div
-          className={`h-full bg-primary rounded-full`}
-          style={{ width: `${progress}%` }}
-        />
-      </div>
+      <Progress value={progress} />
     </Link>
   )
 }

@@ -21,39 +21,34 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
 export { Input }
 
 import { Label } from '@/components/ui/label'
-import { EyeClosedIcon, EyeIcon } from 'lucide-react'
 import { Button } from './button'
 
 export function CustomInput({
   label,
   htmlFor,
   type,
-  isPassword = false,
-  togglePasswordIcon,
+  rightIcon,
+  onRightIconClick,
   ...inputProps
 }: {
   label?: string
   htmlFor?: string
-  isPassword?: boolean
-  togglePasswordIcon?: () => void
+  rightIcon?: React.ReactNode
+  onRightIconClick?: () => void
 } & React.ComponentProps<'input'>) {
   return (
     <div className="grid w-full max-w-sm items-center gap-3">
       {label && <Label htmlFor={htmlFor}>{label}</Label>}
       <div className="relative">
         <Input type={type} {...inputProps} />
-        {isPassword && (
+        {rightIcon && (
           <Button
-            className="absolute right-0 bottom-0 hover:bg-transparent"
             variant="ghost"
             size="icon"
-            onClick={togglePasswordIcon}
+            className="absolute right-0 bottom-0"
+            onClick={onRightIconClick}
           >
-            {type === 'password' ? (
-              <EyeClosedIcon size={16} />
-            ) : (
-              <EyeIcon size={16} />
-            )}
+            {rightIcon}
           </Button>
         )}
       </div>

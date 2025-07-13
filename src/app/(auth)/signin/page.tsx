@@ -8,6 +8,7 @@ import { notify } from '@/utilities/common'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { EyeClosedIcon, EyeIcon } from 'lucide-react'
 
 export default function Login() {
   const router = useRouter()
@@ -32,8 +33,10 @@ export default function Login() {
           htmlFor="password"
           placeholder="Enter your password"
           type={showPassword ? 'text' : 'password'}
-          isPassword
-          togglePasswordIcon={togglePassword}
+          rightIcon={
+            showPassword ? <EyeIcon size={16} /> : <EyeClosedIcon size={16} />
+          }
+          onRightIconClick={togglePassword}
         />
         <Label>
           <Link href="/forgot-password" className="text-primary">

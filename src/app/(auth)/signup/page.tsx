@@ -9,6 +9,7 @@ import { notify } from '@/utilities/common'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { EyeClosedIcon, EyeIcon } from 'lucide-react'
 
 export default function Signup() {
   const router = useRouter()
@@ -39,8 +40,10 @@ export default function Signup() {
           htmlFor="password"
           placeholder="Enter your password"
           type={showPassword ? 'text' : 'password'}
-          isPassword
-          togglePasswordIcon={togglePassword}
+          rightIcon={
+            showPassword ? <EyeIcon size={16} /> : <EyeClosedIcon size={16} />
+          }
+          onRightIconClick={togglePassword}
         />
         <div className="flex items-center gap-3">
           <Checkbox id="terms" />

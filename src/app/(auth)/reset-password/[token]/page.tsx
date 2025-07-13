@@ -7,6 +7,7 @@ import Title from '@/components/title'
 import { notify } from '@/utilities/common'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { EyeClosedIcon, EyeIcon } from 'lucide-react'
 
 export default function ForgotPassword() {
   const router = useRouter()
@@ -34,16 +35,24 @@ export default function ForgotPassword() {
           htmlFor="password"
           placeholder="Enter your new password"
           type={showPassword ? 'text' : 'password'}
-          isPassword
-          togglePasswordIcon={togglePassword}
+          rightIcon={
+            showPassword ? <EyeIcon size={16} /> : <EyeClosedIcon size={16} />
+          }
+          onRightIconClick={togglePassword}
         />
         <CustomInput
           label="Confirm New Password"
           htmlFor="confirm password"
           placeholder="Confirm your new password"
           type={showConfirmPassword ? 'text' : 'password'}
-          isPassword
-          togglePasswordIcon={toggleConfirmPassword}
+          rightIcon={
+            showConfirmPassword ? (
+              <EyeIcon size={16} />
+            ) : (
+              <EyeClosedIcon size={16} />
+            )
+          }
+          onRightIconClick={toggleConfirmPassword}
         />
         <Label>
           Password must be at least 8 characters long and include a mix of

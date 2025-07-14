@@ -1,9 +1,41 @@
+import { MainGoalTile } from '@/components/goals/goal-tile'
 import Title from '@/components/title'
+import { Button } from '@/components/ui/button'
+import { CustomInput } from '@/components/ui/input'
+import { goals } from '@/constants/goals'
 
 export default function Goals() {
   return (
-    <div>
-      <Title text="Goals" />
+    <div className="grid gap-4">
+      <div>
+        <div className="flex justify-between items-center">
+          <Title text="Goals" />
+          <Button variant="secondary" className="rounded-[20px] cursor-pointer">
+            New Goal
+          </Button>
+        </div>
+        <p className="text-sm leading-[21px] text-foreground/70">
+          Manage your long and short term goals whilst creating subsequent tasks
+          under them for better reassessments.
+        </p>
+      </div>
+      <CustomInput placeholder="Search goals" />
+      <Title text="Current Goals" type="sub-heading-2" />
+      {goals.map((goal) => (
+        <MainGoalTile
+          key={goal.id}
+          title={goal.title}
+          description="Lorem ipsum dolor sit amelia"
+        />
+      ))}
+      <Title text="Completed Goals" type="sub-heading-2" />
+      {goals.map((goal) => (
+        <MainGoalTile
+          key={goal.id}
+          title={goal.title}
+          description="Lorem ipsum dolor sit amelia"
+        />
+      ))}
     </div>
   )
 }

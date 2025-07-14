@@ -11,7 +11,7 @@ export default function TaskTile({
   title: string
   date: string
   completed: boolean
-  onCheckClick: () => void
+  onCheckClick?: () => void
 }) {
   return (
     <div className="flex items-center justify-between hover:bg-accent-foreground/10 p-4 rounded-lg transition-colors">

@@ -71,3 +71,32 @@ export const notify = (type: 'success' | 'error' | 'info', message: string) => {
       break
   }
 }
+
+export const randomHexColor = () => {
+  const letters = '0123456789ABCDEF'
+  let color = '#'
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)]
+  }
+  return color
+}
+
+export const randomRgbColor = () => {
+  const r = Math.floor(Math.random() * 256)
+  const g = Math.floor(Math.random() * 256)
+  const b = Math.floor(Math.random() * 256)
+  return `rgb(${r}, ${g}, ${b})`
+}
+
+export const randomHslColor = () => {
+  const h = Math.floor(Math.random() * 360)
+  const s = Math.floor(Math.random() * 100) + '%'
+  const l = Math.floor(Math.random() * 100) + '%'
+  return `hsl(${h}, ${s}, ${l})`
+}
+
+export const randomId = () => {
+  const timestamp = Date.now().toString(36) // Convert timestamp to base-36 string
+  const randomPart = Math.random().toString(36).substring(2, 10)
+  return `taskipline-${timestamp}-${randomPart}`
+}

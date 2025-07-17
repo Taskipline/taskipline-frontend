@@ -22,6 +22,24 @@ export default function ForgotPassword() {
     notify('success', 'password reset successful')
     router.push('/signin')
   }
+
+  if (false) {
+    return (
+      <div>
+        <div className="max-w-sm mx-auto grid gap-4 text-center">
+          <h1 className="text-2xl font-bold mb-4">
+            Resend Password Reset Link To Email
+          </h1>
+          <p className="mb-6 text-error">
+            This token is either expired. Enter your email to receive a new
+            password reset link.
+          </p>
+          <CustomInput placeholder="Email Address" />
+          <Button className="max-w-sm">Resend Password Reset Link</Button>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="grid gap-6">
       <Title

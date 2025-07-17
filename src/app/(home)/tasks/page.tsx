@@ -1,3 +1,4 @@
+import TaskModal from '@/components/tasks/task-modal'
 import TaskTile from '@/components/tasks/task-tile'
 import Title from '@/components/title'
 import { Button } from '@/components/ui/button'
@@ -11,9 +12,7 @@ export default function Tasks() {
       <div>
         <div className="flex justify-between items-center">
           <Title text="Tasks" />
-          <Button variant="secondary" className="rounded-[20px] cursor-pointer">
-            New Task
-          </Button>
+          <TaskModal type="create" />
         </div>
         <p className="text-sm leading-[21px] text-foreground/70">
           Manage your tasks effectively to stay on top of your goals.

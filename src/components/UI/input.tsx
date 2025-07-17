@@ -29,15 +29,17 @@ export function CustomInput({
   type,
   rightIcon,
   onRightIconClick,
+  width = 'max-w-sm',
   ...inputProps
 }: {
   label?: string
   htmlFor?: string
   rightIcon?: React.ReactNode
   onRightIconClick?: () => void
+  width?: string
 } & React.ComponentProps<'input'>) {
   return (
-    <div className="grid w-full max-w-sm items-center gap-3">
+    <div className={`grid w-full ${width} items-center gap-3`}>
       {label && <Label htmlFor={htmlFor}>{label}</Label>}
       <div className="relative">
         <Input type={type} {...inputProps} />

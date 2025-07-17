@@ -4,7 +4,8 @@ import { useState } from 'react'
 import TaskTile from '../tasks/task-tile'
 import Title from '../title'
 import { tasks } from '@/constants/tasks'
-import { Button } from '../ui/button'
+import GoalModal from '../goals/goal-modal'
+import TaskModal from '../tasks/task-modal'
 
 export default function TasksSection() {
   const [taskList, setTaskList] = useState(tasks)
@@ -31,10 +32,8 @@ export default function TasksSection() {
           ))}
         </div>
         <div className="flex gap-2">
-          <Button className="rounded-[20px]">New Task</Button>
-          <Button className="rounded-[20px]" variant="secondary">
-            New Goal
-          </Button>
+          <TaskModal type="create" callToActionButtonVariant="default" />
+          <GoalModal type="create" />
         </div>
       </div>
     </section>

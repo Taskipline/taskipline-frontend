@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Progress } from '../ui/progress'
-import { Button } from '../ui/button'
 import Image from 'next/image'
+import GoalModal from './goal-modal'
 
 export default function GoalTile({
   title,
@@ -40,9 +40,7 @@ export function MainGoalTile({
             {description}
           </p>
         </div>
-        <Button variant="secondary" className="rounded-[20px] w-fit">
-          <Link href="/goals#1234">View Details</Link>
-        </Button>
+        <GoalModal type="view" />
       </div>
       <Image
         src="https://picsum.photos/300/200"

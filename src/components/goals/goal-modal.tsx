@@ -24,8 +24,12 @@ import { Progress } from '../ui/progress'
 
 export default function GoalModal({
   type,
+  callToActionButtonVariant = 'secondary',
+  callToActionButtonContent,
 }: {
   type: 'create' | 'edit' | 'view'
+  callToActionButtonVariant?: 'secondary' | 'default' | 'link'
+  callToActionButtonContent?: React.ReactNode | string
 }) {
   const [subTasksEnabled, setSubTasksEnabled] = useState(false)
 
@@ -33,12 +37,16 @@ export default function GoalModal({
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button variant="secondary" className="rounded-[20px] cursor-pointer">
-            {type === 'create'
-              ? 'New Goal'
-              : type === 'edit'
-                ? 'Edit Goal'
-                : type === 'view' && 'View Details'}
+          <Button
+            variant={callToActionButtonVariant}
+            className="rounded-[20px] cursor-pointer"
+          >
+            {callToActionButtonContent ??
+              (type === 'create'
+                ? 'New Goal'
+                : type === 'edit'
+                  ? 'Edit Goal'
+                  : type === 'view' && 'View Details')}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] md:max-w-[700px] lg:max-w-[900px] xl:max-w-[1000px]">

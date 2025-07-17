@@ -16,7 +16,7 @@ export default function TaskTile({
   showIcon?: boolean
 }) {
   return (
-    <div className="flex items-center justify-between hover:bg-accent-foreground/10 p-4 rounded-lg transition-colors">
+    <div className="flex items-center justify-between hover:bg-accent-foreground/10 px-4 py-2 rounded-lg transition-colors">
       <div className="flex items-center gap-2 md:gap-4">
         {showIcon && (
           <div className="bg-accent size-12 rounded-lg flex items-center justify-center">
@@ -26,9 +26,6 @@ export default function TaskTile({
         <div>
           <div className="flex items-center gap-2">
             <h3 className="font-medium text-base leading-6">{title}</h3>
-            {/* <Button variant="link" className="cursor-pointer">
-              <ArrowUpRight className="size-5" />
-            </Button> */}
             <TaskModal
               type="view"
               callToActionButtonVariant="link"

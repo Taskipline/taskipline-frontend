@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Progress } from '../ui/progress'
 import Image from 'next/image'
 import GoalModal from './goal-modal'
+import { ArrowUpRight } from 'lucide-react'
 
 export default function GoalTile({
   title,
@@ -16,7 +17,14 @@ export default function GoalTile({
       className="grid gap-2 p-4 hover:bg-accent-foreground/10 rounded-lg transition-colors"
     >
       <div className="flex items-center justify-between">
-        <h3 className="font-medium text-base leading-7">{title}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-medium text-base leading-6">{title}</h3>
+          <GoalModal
+            type="view"
+            callToActionButtonVariant="link"
+            callToActionButtonContent={<ArrowUpRight className="size-5" />}
+          />
+        </div>
         <p className="text-sm leading-[21px]">{progress}%</p>
       </div>
       <Progress value={progress} />

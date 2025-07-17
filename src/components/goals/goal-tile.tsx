@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { Progress } from '../ui/progress'
 import Image from 'next/image'
 import GoalModal from './goal-modal'
@@ -12,10 +11,7 @@ export default function GoalTile({
   progress: number
 }) {
   return (
-    <Link
-      href="/dashboard#goal/1234"
-      className="grid gap-2 p-4 hover:bg-accent-foreground/10 rounded-lg transition-colors"
-    >
+    <div className="grid gap-2 p-4 hover:bg-accent-foreground/10 rounded-lg transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h3 className="font-medium text-base leading-6">{title}</h3>
@@ -28,7 +24,7 @@ export default function GoalTile({
         <p className="text-sm leading-[21px]">{progress}%</p>
       </div>
       <Progress value={progress} />
-    </Link>
+    </div>
   )
 }
 

@@ -10,11 +10,11 @@ export default function NotificationsSettingsSection() {
         description="Receive email notifications for task reminders, updates, and other important events."
         checked={false}
       />
-      <CustomSwitch
+      {/* <CustomSwitch
         title="Push Notifications"
         description="Get push notifications on your device for immediate alerts and reminders."
         checked={false}
-      />
+      /> */}
     </div>
   )
 }

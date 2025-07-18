@@ -5,22 +5,22 @@ import Title from '../title'
 import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
 
-export default function AccountActionSettingsSection() {
+export default function DangerZoneSettingsSection() {
   const router = useRouter()
-  const handleSignout = () => {
+  const handleDeleteAccount = () => {
     // Logic for logging out the user
-    console.log('User logged out')
-    notify('success', 'Logout successful')
-    // Redirect to the login page or home page after logout
+    console.log('Account deleted successfully')
+    notify('success', 'Delete successful')
+    // Redirect to the login page or signup page after deletion
     router.push('/signin')
   }
   return (
     <section className="grid gap-4">
-      <Title text="Account Actions" type="sub-heading-2" />
+      <Title text="Danger Zone" type="sub-heading-2" className="text-error" />
       <Button
-        variant="secondary"
+        variant="destructive"
         className="w-fit rounded-[20px] cursor-pointer"
-        onClick={handleSignout}
+        onClick={handleDeleteAccount}
       >
         Signout
       </Button>

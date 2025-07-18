@@ -1,7 +1,8 @@
 import AccountActionSettingsSection from '@/components/settings/account-action-settings-section'
-import AISettingsSection from '@/components/settings/AI-settings-section'
+// import AISettingsSection from '@/components/settings/AI-settings-section'
 import AppearanceSettingsSection from '@/components/settings/appearance-settings-section'
-import ConnectedAccountsSettingsSection from '@/components/settings/connected-accounts-settings-section'
+// import ConnectedAccountsSettingsSection from '@/components/settings/connected-accounts-settings-section'
+import DangerZoneSettingsSection from '@/components/settings/danger-zone-settings-section'
 import HelpSupportSettingsSection from '@/components/settings/help-support-settings-section'
 import MainSettingsSection from '@/components/settings/main-settings-section'
 import NotificationsSettingsSection from '@/components/settings/notifications-settings-section'
@@ -17,10 +18,11 @@ export default function Settings() {
         <SecuritySettingsSection />
         <NotificationsSettingsSection />
         <AppearanceSettingsSection />
-        <AISettingsSection />
-        <ConnectedAccountsSettingsSection />
+        {/* <AISettingsSection /> */}
+        {/* <ConnectedAccountsSettingsSection /> */}
         <HelpSupportSettingsSection />
         <AccountActionSettingsSection />
+        <DangerZoneSettingsSection />
       </div>
     </div>
   )

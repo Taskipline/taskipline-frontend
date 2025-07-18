@@ -83,6 +83,7 @@ function UpdateProfileDialog() {
               htmlFor="email"
               placeholder="Enter your email"
               value={'emzyakints2005@gmail.com'}
+              disabled
             />
           </div>
           <DialogFooter>

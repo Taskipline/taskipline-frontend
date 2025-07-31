@@ -45,6 +45,7 @@ export function CustomInput({
         <Input type={type} {...inputProps} />
         {rightIcon && (
           <Button
+            type="button"
             variant="ghost"
             size="icon"
             className="absolute right-0 bottom-0"

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useEffect, useRef, useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { verifyAccount, resendVerificationLink } from '@/services/authService'
 import { ApiError } from '@/lib/errors'
@@ -20,17 +20,19 @@ export default function VerifyAccountPage({
 }) {
   const { token } = params
 
-  // --- Verification Query ---
-  const {
-    isLoading: isVerifying,
-    isSuccess: isVerified,
-    isError: isVerificationError,
-    error: verificationError,
-  } = useQuery({
-    queryKey: ['verify-account', token],
-    queryFn: () => verifyAccount(token),
-    retry: false,
+  const verificationStarted = useRef(false)
+
+  // --- Verification Mutation ---
+  const verificationMutation = useMutation({
+    mutationFn: verifyAccount,
   })
+
+  useEffect(() => {
+    if (token && !verificationStarted.current) {
+      verificationStarted.current = true
+      verificationMutation.mutate(token)
+    }
+  }, [token, verificationMutation])
 
   // --- Resend Link Mutation ---
   const [email, setEmail] = useState('')
@@ -64,15 +66,15 @@ export default function VerifyAccountPage({
   // --- Render Logic ---
 
   // State 1: Verifying the token
-  if (isVerifying) {
+  if (verificationMutation.isPending) {
     return <Loading />
   }
 
   // State 2: Verification failed
-  if (isVerificationError) {
+  if (verificationMutation.isError) {
     const errorMessage =
-      verificationError instanceof ApiError
-        ? verificationError.message
+      verificationMutation.error instanceof ApiError
+        ? verificationMutation.error.message
         : 'The verification link is invalid or has expired.'
 
     return (
@@ -110,11 +112,15 @@ export default function VerifyAccountPage({
   }
 
   // State 3: Verification was successful
-  if (isVerified) {
+  if (verificationMutation.isSuccess) {
     return (
-      <div className="max-w-sm mx-auto grid gap-4">
+      <div className="max-w-sm mx-auto grid gap-4 text-center">
         <CheckCircle className="mx-auto h-12 w-12 text-success" />
-        <Title text="Account Verified" type="auth" />
+        <Title
+          text="Account Verified"
+          type="auth"
+          textAlignment="text-center"
+        />
         <p className="text-foreground/80">
           Your account has been successfully verified. You can now log in to
           start using Taskipline.
@@ -126,5 +132,5 @@ export default function VerifyAccountPage({
     )
   }
 
-  return null
+  return <Loading />
 }

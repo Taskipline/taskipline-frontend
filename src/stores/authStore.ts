@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist, createJSONStorage, StateStorage } from 'zustand/middleware'
+import Cookies from 'js-cookie'
 
 // You can expand this type later based on your actual user data
 export type User = {
@@ -8,23 +9,35 @@ export type User = {
 }
 
 type AuthState = {
-  token: string | null
+  accessToken: string | null
   user: User | null
-  setAuth: (token: string, user: User) => void
+  setAuth: (accessToken: string, user: User) => void
   logout: () => void
+}
+
+const cookieStorage: StateStorage = {
+  getItem: (name: string): string | null => {
+    return Cookies.get(name) || null
+  },
+  setItem: (name: string, value: string): void => {
+    Cookies.set(name, value, { expires: 7, path: '/' })
+  },
+  removeItem: (name: string): void => {
+    Cookies.remove(name, { path: '/' })
+  },
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      token: null,
+      accessToken: null,
       user: null,
-      setAuth: (token, user) => set({ token, user }),
-      logout: () => set({ token: null, user: null }),
+      setAuth: (accessToken, user) => set({ accessToken, user }),
+      logout: () => set({ accessToken: null, user: null }),
     }),
     {
-      name: 'auth-storage', // unique name for the localStorage item
-      storage: createJSONStorage(() => localStorage),
+      name: 'auth-storage',
+      storage: createJSONStorage(() => cookieStorage),
     }
   )
 )

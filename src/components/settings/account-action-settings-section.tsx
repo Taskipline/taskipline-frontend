@@ -13,7 +13,7 @@ export default function AccountActionSettingsSection() {
   const queryClient = useQueryClient()
 
   const handleSignout = () => {
-    // 1. Clear the authentication token and user data from the client
+    // 1. Clear the authentication accessToken and user data from the client
     logout()
 
     // 2. Clear all cached API data to ensure a clean state for the next user

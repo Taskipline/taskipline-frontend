@@ -26,7 +26,7 @@ export default function Signin() {
   const mutation = useMutation({
     mutationFn: signin,
     onSuccess: (data) => {
-      setAuth(data.token, data.user)
+      setAuth(data.accessToken, data.user)
       notify('success', 'Login successful!')
       router.push('/dashboard')
     },

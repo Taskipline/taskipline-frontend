@@ -24,6 +24,9 @@ const eslintConfig = [
     },
   },
   {
+    ignores: ['.next/'],
+  },
+  {
     files: ["**/*.{js,jsx}"],
     rules: {
       // For JavaScript files, enable no-undef

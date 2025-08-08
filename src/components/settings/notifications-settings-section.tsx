@@ -69,7 +69,7 @@ export default function NotificationsSettingsSection() {
     )
   }
 
-  if (!user?.preferences) {
+  if (!user) {
     return (
       <div className="grid gap-4">
         <Title text="Notifications" type="sub-heading-2" />

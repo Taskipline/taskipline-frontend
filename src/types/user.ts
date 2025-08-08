@@ -17,3 +17,26 @@ export interface UpdateProfileResponse {
     // Add other user properties as needed
   }
 }
+
+export interface ChangePasswordPayload {
+  oldPassword: string
+  newPassword: string
+  confirmNewPassword: string
+}
+
+export interface ChangePasswordResponse {
+  message: string
+}
+
+export interface UpdatePreferencesPayload {
+  emailNotifications: boolean
+  enableAIFeatures: boolean
+}
+
+export interface UpdatePreferencesResponse {
+  message?: string
+  preferences?: {
+    emailNotifications: boolean
+    enableAIFeatures: boolean
+  }
+}

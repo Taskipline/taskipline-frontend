@@ -1,12 +1,14 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage, StateStorage } from 'zustand/middleware'
 import Cookies from 'js-cookie'
+import type { Preferences } from '@/types/user'
 
 export type User = {
   id: string
   email: string
   firstName: string
   lastName: string
+  preferences?: Preferences
 }
 
 type AuthState = {

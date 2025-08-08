@@ -3,7 +3,7 @@ import AccountActionSettingsSection from '@/components/settings/account-action-s
 import AppearanceSettingsSection from '@/components/settings/appearance-settings-section'
 // import ConnectedAccountsSettingsSection from '@/components/settings/connected-accounts-settings-section'
 import DangerZoneSettingsSection from '@/components/settings/danger-zone-settings-section'
-import HelpSupportSettingsSection from '@/components/settings/help-support-settings-section'
+// import HelpSupportSettingsSection from '@/components/settings/help-support-settings-section'
 import MainSettingsSection from '@/components/settings/main-settings-section'
 import NotificationsSettingsSection from '@/components/settings/notifications-settings-section'
 import SecuritySettingsSection from '@/components/settings/security-settings-section'
@@ -20,7 +20,7 @@ export default function Settings() {
         <AppearanceSettingsSection />
         {/* <AISettingsSection /> */}
         {/* <ConnectedAccountsSettingsSection /> */}
-        <HelpSupportSettingsSection />
+        {/* <HelpSupportSettingsSection /> */}
         <AccountActionSettingsSection />
         <DangerZoneSettingsSection />
       </div>

@@ -1,3 +1,5 @@
+import type { User } from '@/stores/authStore'
+
 export interface DeleteAccountCredentials {
   password: string
 }
@@ -35,8 +37,11 @@ export interface UpdatePreferencesPayload {
 
 export interface UpdatePreferencesResponse {
   message?: string
-  preferences?: {
-    emailNotifications: boolean
-    enableAIFeatures: boolean
-  }
+  user?: User
+  preferences?: Preferences
+}
+
+export interface Preferences {
+  emailNotifications: boolean
+  enableAIFeatures: boolean
 }

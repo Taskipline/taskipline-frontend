@@ -34,20 +34,21 @@ export function CustomSwitch({
   title,
   description,
   checked,
+  ...props
 }: {
   title: string
   description: string
   checked: boolean
-}) {
+} & React.ComponentProps<typeof Switch>) {
   return (
-    <div className="flex justify-between hover:bg-accent-foreground/10 transition-colors p-2 rounded-lg cursor-pointer">
+    <div className="flex justify-between hover:bg-accent-foreground/10 transition-colors p-2 rounded-lg cursor-default">
       <div className="">
         <h3 className="font-medium text-base leading-6">{title}</h3>
         <p className="text-sm leading-[21px] text-foreground/70">
           {description}
         </p>
       </div>
-      <Switch checked={checked} />
+      <Switch checked={checked} className="cursor-pointer" {...props} />
     </div>
   )
 }

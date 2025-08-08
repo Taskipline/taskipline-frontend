@@ -28,7 +28,7 @@ export default function MainSettingsSection() {
     return (
       <section className="grid gap-4">
         <Title text="Profile" type="sub-heading-2" />
-        <p>Loading profile...</p>
+        <p className="text-sm text-muted-foreground">Loading profile...</p>
       </section>
     )
   }

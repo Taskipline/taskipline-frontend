@@ -19,7 +19,6 @@ import { CustomTextarea } from '../ui/textarea'
 import { Pencil } from 'lucide-react'
 import { tasks } from '@/constants/tasks'
 import Title from '../title'
-import TaskTile from '../tasks/task-tile'
 import { Progress } from '../ui/progress'
 
 export default function GoalModal({
@@ -141,7 +140,7 @@ export default function GoalModal({
                   <Progress value={75} className="" />
                 </div>
                 <Title text="Sub-tasks" type="sub-heading-2" />
-                {tasks.map((task) => (
+                {/* {tasks.map((task) => (
                   <TaskTile
                     key={task.id}
                     title={task.title}
@@ -150,7 +149,7 @@ export default function GoalModal({
                     showIcon={false}
                     // description={task.description}
                   />
-                ))}
+                ))} */}
               </>
             )}
           </div>

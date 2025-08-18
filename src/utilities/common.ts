@@ -100,3 +100,40 @@ export const randomId = () => {
   const randomPart = Math.random().toString(36).substring(2, 10)
   return `taskipline-${timestamp}-${randomPart}`
 }
+
+export const toIsoOrUndefined = (val?: string) =>
+  val ? new Date(val).toISOString() : undefined
+
+export const now = new Date()
+export const startOfToday = new Date(
+  now.getFullYear(),
+  now.getMonth(),
+  now.getDate(),
+  0,
+  0,
+  0,
+  0
+)
+export const endOfToday = new Date(
+  now.getFullYear(),
+  now.getMonth(),
+  now.getDate(),
+  23,
+  59,
+  59,
+  999
+)
+
+export const isoToLocalInput = (iso?: string) => {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  // yyyy-MM-ddTHH:mm
+  const pad = (n: number) => `${n}`.padStart(2, '0')
+  const yyyy = d.getFullYear()
+  const MM = pad(d.getMonth() + 1)
+  const dd = pad(d.getDate())
+  const hh = pad(d.getHours())
+  const mm = pad(d.getMinutes())
+  return `${yyyy}-${MM}-${dd}T${hh}:${mm}`
+}

@@ -18,7 +18,7 @@ import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteTask, updateTask } from '@/services/taskService'
 import type { Task } from '@/types/tasks'
 import { useState } from 'react'
-import { notify } from '@/utilities/common'
+import { formatDueDate, notify } from '@/utilities/common'
 
 export default function TaskTile({
   task,
@@ -61,7 +61,7 @@ export default function TaskTile({
           <p
             className={`text-sm leading-[21px] ${task.isCompleted ? 'line-through text-foreground/50' : 'text-foreground/70'}`}
           >
-            {task.dueDate}
+            {formatDueDate(task.dueDate)}
           </p>
         </div>
       </div>

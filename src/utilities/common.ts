@@ -124,6 +124,10 @@ export const endOfToday = new Date(
   999
 )
 
+/*
+ * Converts an ISO date string to a local input format (YYYY-MM-DDTHH:mm).
+ * Returns an empty string if the input is undefined or invalid.
+ */
 export const isoToLocalInput = (iso?: string) => {
   if (!iso) return ''
   const d = new Date(iso)
@@ -136,4 +140,43 @@ export const isoToLocalInput = (iso?: string) => {
   const hh = pad(d.getHours())
   const mm = pad(d.getMinutes())
   return `${yyyy}-${MM}-${dd}T${hh}:${mm}`
+}
+
+/*
+ * Formats a date string to a more readable format.
+ * If the date is today, it returns "Today at HH:MM".
+ * If the date is tomorrow, it returns "Tomorrow at HH:MM".
+ * If the date is yesterday, it returns "Yesterday at HH:MM".
+ * Otherwise, it returns the formatted date string.
+ */
+export function formatDueDate(iso?: string) {
+  if (!iso) return 'No due date'
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return 'Invalid date'
+
+  const now = new Date()
+  const startOf = (dt: Date) =>
+    new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 0, 0, 0, 0)
+  const startToday = startOf(now)
+  const startDue = startOf(d)
+  const diffDays = Math.round(
+    (startDue.getTime() - startToday.getTime()) / 86400000
+  )
+
+  const timeStr = d.toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+
+  if (diffDays === 0) return `Today at ${timeStr}`
+  if (diffDays === 1) return `Tomorrow at ${timeStr}`
+  if (diffDays === -1) return `Yesterday at ${timeStr}`
+
+  const dateStr = d.toLocaleDateString(undefined, {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
+  return `${dateStr} at ${timeStr}`
 }

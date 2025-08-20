@@ -79,7 +79,7 @@ export default function Tasks() {
       {isLoading ? (
         <p>Loading tasks...</p>
       ) : tasks.length === 0 ? (
-        <p>You do not have any tasks</p>
+        <p className="text-accent italic">You do not have any tasks</p>
       ) : (
         <>
           {tasksToday.length > 0 && (

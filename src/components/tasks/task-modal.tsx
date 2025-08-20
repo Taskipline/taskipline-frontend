@@ -47,6 +47,7 @@ export default function TaskModal({
   const { data: tasks, isLoading: isFetchingTasks } = useQuery({
     queryKey: ['tasks'],
     queryFn: listTasks,
+    enabled: type !== 'create',
   })
 
   const [open, setOpen] = useState(false)

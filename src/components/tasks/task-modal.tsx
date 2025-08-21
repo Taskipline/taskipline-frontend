@@ -24,11 +24,20 @@ import {
 import { CustomInput } from '../ui/input'
 import { CustomTextarea } from '../ui/textarea'
 import { taskPriorities } from '@/constants/tasks'
-import { goals } from '@/constants/goals'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createTask, listTasks, updateTask } from '@/services/taskService'
 import { type Task, TaskPriority } from '@/types/tasks'
-import { isoToLocalInput, notify, toIsoOrUndefined } from '@/utilities/common'
+import {
+  isoToLocalInput,
+  notify,
+  toIsoOrUndefined,
+  randomId,
+  recomputeAndPatchGoalCompletion,
+  recomputeAndPatchGoals,
+  syncGoalTasksFromTasks,
+  syncGoalsTasksFromTasks,
+} from '@/utilities/common'
+import { listGoals } from '@/services/goalService'
 
 // todo: make sure to check the task to goal dialog
 
@@ -52,7 +61,7 @@ export default function TaskModal({
 
   const [open, setOpen] = useState(false)
   const [priority, setPriority] = useState<TaskPriority>('medium')
-  const [goal, setGoal] = useState<string | undefined>(undefined)
+  const [goalId, setGoalId] = useState<string | undefined>(undefined)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   // const [dueDate, setDueDate] = useState<string | undefined>(undefined)
@@ -69,13 +78,13 @@ export default function TaskModal({
       setDescription('')
       setDueDateLocal('')
       setPriority('medium')
-      setGoal(undefined)
+      setGoalId(undefined)
     } else if ((type === 'edit' || type === 'view') && originalTask) {
       setTitle(originalTask.title)
       setDescription(originalTask.description || '')
       setDueDateLocal(isoToLocalInput(originalTask.dueDate))
       setPriority(originalTask.priority || 'medium')
-      setGoal(originalTask.goal || undefined)
+      setGoalId(originalTask.goal || undefined)
     }
   }, [open, type, originalTask])
 
@@ -97,20 +106,51 @@ export default function TaskModal({
       normalize.dateIsoFromLocal(dueDateLocal) !==
         (originalTask.dueDate ?? '') ||
       normalize.priority(priority) !== originalTask.priority ||
-      normalize.goal(goal) !== normalize.goal(originalTask.goal))
+      normalize.goal(goalId) !== normalize.goal(originalTask.goal))
 
   const createMutation = useMutation({
     mutationFn: createTask,
+    onMutate: async (payload) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks'] })
+      const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+      const tempTask: Task = {
+        id: `temp-${randomId()}`,
+        title: payload.title,
+        description: payload.description,
+        dueDate: payload.dueDate,
+        priority: payload.priority,
+        isCompleted: false,
+        goal: payload.goal,
+      }
+      queryClient.setQueryData<Task[]>(['tasks'], (old) => [
+        ...(old ?? []),
+        tempTask,
+      ])
+      // Optimistically recompute the linked goal progress
+      if (payload.goal) {
+        recomputeAndPatchGoalCompletion(queryClient, payload.goal)
+        syncGoalTasksFromTasks(queryClient, payload.goal)
+      }
+      return { previousTasks }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context.previousTasks)
+      }
+      notify('error', 'Failed to create task. Changes were rolled back.')
+    },
     onSuccess: () => {
       notify('success', 'Task created successfully.')
-      queryClient.invalidateQueries({ queryKey: ['tasks'] })
       setOpen(false)
       setTitle('')
       setDescription('')
       setDueDateLocal('')
       setPriority('medium')
-      setGoal(undefined)
+      setGoalId(undefined)
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
     },
+    onSettled: () => {},
   })
 
   const updateMutation = useMutation({
@@ -122,22 +162,77 @@ export default function TaskModal({
       priority: TaskPriority
       goal?: string
     }) => updateTask(task.id, task),
+    onMutate: async (updated) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks'] })
+      const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+      queryClient.setQueryData<Task[]>(['tasks'], (old) =>
+        (old ?? []).map((t) =>
+          t.id === updated.id
+            ? {
+                ...t,
+                title: updated.title ?? t.title,
+                description: updated.description ?? t.description,
+                dueDate: updated.dueDate ?? t.dueDate,
+                priority: updated.priority ?? t.priority,
+                goal: updated.goal ?? t.goal,
+              }
+            : t
+        )
+      )
+      // Optimistically recompute goal progress if goal linkage affected
+      const prevTask = previousTasks?.find((t) => t.id === updated.id)
+      const affected = new Set<string>()
+      if (prevTask?.goal) affected.add(prevTask.goal)
+      const nextGoal = updated.goal ?? prevTask?.goal
+      if (nextGoal) affected.add(nextGoal)
+      recomputeAndPatchGoals(queryClient, affected)
+      syncGoalsTasksFromTasks(queryClient, affected)
+      return { previousTasks }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context.previousTasks)
+      }
+      notify('error', 'Failed to update task. Changes were rolled back.')
+    },
     onSuccess: () => {
       notify('success', 'Task updated successfully.')
-      queryClient.invalidateQueries({ queryKey: ['tasks'] })
       setOpen(false)
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
     },
+    onSettled: () => {},
   })
 
   const toggleTaskCompletionMutation = useMutation({
     mutationFn: (task: Task) =>
       updateTask(task.id, { isCompleted: !task.isCompleted }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] })
-      const task = originalTask || tasks?.find((t) => t.id === taskId)
-      if (!task) return
-      notify('success', `Task '${task.title}' updated successfully.`)
+    onMutate: async (t) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks'] })
+      const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+      queryClient.setQueryData<Task[]>(['tasks'], (old) =>
+        (old ?? []).map((x) =>
+          x.id === t.id ? { ...x, isCompleted: !x.isCompleted } : x
+        )
+      )
+      if (t.goal) {
+        recomputeAndPatchGoalCompletion(queryClient, t.goal)
+        syncGoalTasksFromTasks(queryClient, t.goal)
+      }
+      return { previousTasks }
     },
+    onError: (_err, _vars, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context.previousTasks)
+      }
+      notify('error', 'Failed to toggle task. Changes were rolled back.')
+    },
+    onSuccess: (_data, t) => {
+      notify('success', `Task '${t.title}' updated successfully.`)
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+    },
+    onSettled: () => {},
   })
 
   return (
@@ -180,7 +275,7 @@ export default function TaskModal({
                   description: description || undefined,
                   dueDate: toIsoOrUndefined(dueDateLocal),
                   priority,
-                  goal,
+                  goal: goalId,
                 })
               } else if (type === 'edit' && originalTask) {
                 updateMutation.mutate({
@@ -189,7 +284,7 @@ export default function TaskModal({
                   description: description || undefined,
                   dueDate: toIsoOrUndefined(dueDateLocal),
                   priority,
-                  goal,
+                  goal: goalId,
                 })
               }
             }}
@@ -225,9 +320,7 @@ export default function TaskModal({
                 setPriority={setPriority}
                 type={type}
               />
-              <div className="hidden">
-                <GoalDropdown goal={goal} setGoal={setGoal} type={type} />
-              </div>
+              <GoalDropdown goalId={goalId} setGoalId={setGoalId} type={type} />
             </div>
             <DialogFooter>
               {type === 'create' ? (
@@ -337,14 +430,20 @@ function PriorityDropdown({
 }
 
 function GoalDropdown({
-  goal,
-  setGoal,
+  goalId,
+  setGoalId,
   type,
 }: {
-  goal: string | undefined
-  setGoal: (value: string | undefined) => void
+  goalId: string | undefined
+  setGoalId: (value: string | undefined) => void
   type: 'create' | 'edit' | 'view'
 }) {
+  const { data: goals, isLoading: isFetchingGoals } = useQuery({
+    queryKey: ['goals'],
+    queryFn: listGoals,
+    enabled: type !== 'create',
+  })
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger disabled={type === 'view'} asChild>
@@ -352,9 +451,9 @@ function GoalDropdown({
           label="Link to Goal (optional)"
           placeholder="Select priority"
           value={
-            goal
-              ? goal.charAt(0).toUpperCase() + goal.slice(1)
-              : 'Select priority'
+            goalId
+              ? goalId.charAt(0).toUpperCase() + goalId.slice(1)
+              : 'Select goal'
           }
           readOnly
           className="cursor-pointer text-left"
@@ -362,22 +461,29 @@ function GoalDropdown({
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Select Goal</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={goals.find((g) => g.value === goal)?.title}
-          onValueChange={(value) => setGoal(value as string)}
-          defaultValue={goals[0].title}
-        >
-          {goals.map((taskPriority) => (
-            <DropdownMenuRadioItem
-              key={taskPriority.value}
-              value={taskPriority.value}
+        {isFetchingGoals ? (
+          <p>Loading goals...</p>
+        ) : goals?.length === 0 ? (
+          <p className="text-accent italic">No goals available</p>
+        ) : (
+          <>
+            <DropdownMenuLabel>Select Goal</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuRadioGroup
+              value={goals?.find((g) => g._id === goalId)?.title}
+              onValueChange={(value) => setGoalId(value as string)}
             >
-              {taskPriority.title}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
+              {goals?.map((taskPriority) => (
+                <DropdownMenuRadioItem
+                  key={taskPriority._id}
+                  value={taskPriority.title}
+                >
+                  {taskPriority.title}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -1,4 +1,7 @@
 import toast from 'react-hot-toast'
+import type { QueryClient } from '@tanstack/react-query'
+import type { Task } from '@/types/tasks'
+import type { Goal } from '@/types/goal'
 
 export function validateEmail(email: string): boolean {
   // Simple regex for validating email format
@@ -179,4 +182,107 @@ export function formatDueDate(iso?: string) {
     day: 'numeric',
   })
   return `${dateStr} at ${timeStr}`
+}
+
+// Recompute and patch a single goal's completionPercentage from tasks in cache
+export function recomputeAndPatchGoalCompletion(
+  queryClient: QueryClient,
+  goalId: string
+) {
+  if (!goalId) return
+  const tasks = queryClient.getQueryData<Task[]>(['tasks'])
+  if (!tasks) {
+    // Fallback: compute from existing goals cache without relying on tasks cache
+    queryClient.setQueryData<Goal[]>(['goals'], (old) =>
+      (old ?? []).map((g) => {
+        if (g._id !== goalId) return g
+        const list = Array.isArray(g.tasks) ? g.tasks : []
+        const total = list.length
+        const done = list.filter((t) => t.isCompleted).length
+        const pct = total ? Math.round((done / total) * 100) : 0
+        return { ...g, completionPercentage: pct }
+      })
+    )
+    return
+  }
+  const related = tasks.filter((t) => t.goal === goalId)
+  const total = related.length
+  const done = related.filter((t) => t.isCompleted).length
+  const pct = total ? Math.round((done / total) * 100) : 0
+  queryClient.setQueryData<Goal[]>(['goals'], (old) =>
+    (old ?? []).map((g) =>
+      g._id === goalId ? { ...g, completionPercentage: pct } : g
+    )
+  )
+}
+
+// Recompute and patch multiple goals' completionPercentage from tasks in cache
+export function recomputeAndPatchGoals(
+  queryClient: QueryClient,
+  goalIds: Iterable<string>
+) {
+  const ids = Array.from(new Set(goalIds)).filter(Boolean)
+  if (ids.length === 0) return
+  const tasks = queryClient.getQueryData<Task[]>(['tasks'])
+  const pctById = new Map<string, number>()
+  if (tasks) {
+    for (const id of ids) {
+      const related = tasks.filter((t) => t.goal === id)
+      const total = related.length
+      const done = related.filter((t) => t.isCompleted).length
+      pctById.set(id, total ? Math.round((done / total) * 100) : 0)
+    }
+  } else {
+    const goals = queryClient.getQueryData<Goal[]>(['goals']) ?? []
+    for (const id of ids) {
+      const g = goals.find((x) => x._id === id)
+      const list = g?.tasks ?? []
+      const total = list.length
+      const done = list.filter((t) => t.isCompleted).length
+      pctById.set(id, total ? Math.round((done / total) * 100) : 0)
+    }
+  }
+  queryClient.setQueryData<Goal[]>(['goals'], (old) =>
+    (old ?? []).map((g) =>
+      pctById.has(g._id)
+        ? { ...g, completionPercentage: pctById.get(g._id)! }
+        : g
+    )
+  )
+}
+
+// Keep goal.tasks arrays in the goals cache in sync with the tasks cache
+export function syncGoalTasksFromTasks(
+  queryClient: QueryClient,
+  goalId: string
+) {
+  if (!goalId) return
+  const tasks = queryClient.getQueryData<Task[]>(['tasks'])
+  if (!tasks) return
+  const related = tasks.filter((t) => t.goal === goalId)
+  queryClient.setQueryData<Goal[]>(['goals'], (old) =>
+    (old ?? []).map((g) => (g._id === goalId ? { ...g, tasks: related } : g))
+  )
+}
+
+export function syncGoalsTasksFromTasks(
+  queryClient: QueryClient,
+  goalIds: Iterable<string>
+) {
+  const ids = Array.from(new Set(goalIds)).filter(Boolean)
+  if (ids.length === 0) return
+  const tasks = queryClient.getQueryData<Task[]>(['tasks'])
+  if (!tasks) return
+  const byGoal = new Map<string, Task[]>()
+  for (const id of ids) {
+    byGoal.set(
+      id,
+      tasks.filter((t) => t.goal === id)
+    )
+  }
+  queryClient.setQueryData<Goal[]>(['goals'], (old) =>
+    (old ?? []).map((g) =>
+      byGoal.has(g._id) ? { ...g, tasks: byGoal.get(g._id)! } : g
+    )
+  )
 }

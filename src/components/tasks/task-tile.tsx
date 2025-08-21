@@ -18,7 +18,12 @@ import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteTask, updateTask } from '@/services/taskService'
 import type { Task } from '@/types/tasks'
 import { useState } from 'react'
-import { formatDueDate, notify } from '@/utilities/common'
+import {
+  formatDueDate,
+  notify,
+  recomputeAndPatchGoalCompletion,
+  syncGoalTasksFromTasks,
+} from '@/utilities/common'
 
 export default function TaskTile({
   task,
@@ -28,10 +33,32 @@ export default function TaskTile({
   const toggleTaskCompletionMutation = useMutation({
     mutationFn: (task: Task) =>
       updateTask(task.id, { isCompleted: !task.isCompleted }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] })
-      notify('success', `Task '${task.title}' updated successfully.`)
+    onMutate: async (t) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks'] })
+      const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+      queryClient.setQueryData<Task[]>(['tasks'], (old) =>
+        (old ?? []).map((x) =>
+          x.id === t.id ? { ...x, isCompleted: !x.isCompleted } : x
+        )
+      )
+      if (t.goal) {
+        recomputeAndPatchGoalCompletion(queryClient, t.goal)
+        syncGoalTasksFromTasks(queryClient, t.goal)
+      }
+      return { previousTasks }
     },
+    onError: (_err, _vars, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context.previousTasks)
+      }
+      notify('error', 'Failed to toggle task. Changes were rolled back.')
+    },
+    onSuccess: () => {
+      notify('success', `Task '${task.title}' updated successfully.`)
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
+    },
+    onSettled: () => {},
   })
 
   return (
@@ -49,7 +76,7 @@ export default function TaskTile({
             <h3
               className={`font-medium text-base leading-6 ${task.isCompleted && 'line-through text-foreground/50'}`}
             >
-              {task.title}
+              {(task.title ?? '').toLocaleUpperCase()}
             </h3>
             <TaskModal
               type="view"
@@ -92,11 +119,32 @@ function DeleteDialog({
   const [open, setOpen] = useState(false)
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteTask(id),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks'] })
+      const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+      queryClient.setQueryData<Task[]>(['tasks'], (old) =>
+        (old ?? []).filter((t) => t.id !== id)
+      )
+      // Optimistically recompute goal progress for the goal this task belonged to
+      if (task.goal) {
+        recomputeAndPatchGoalCompletion(queryClient, task.goal)
+        syncGoalTasksFromTasks(queryClient, task.goal)
+      }
+      return { previousTasks }
+    },
+    onError: (_err, _id, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context.previousTasks)
+      }
+      notify('error', 'Failed to delete task. Changes were rolled back.')
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] })
       setOpen(false)
       notify('success', 'Task deleted successfully.')
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
     },
+    onSettled: () => {},
   })
 
   return (

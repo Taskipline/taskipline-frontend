@@ -25,7 +25,9 @@ export default function GoalTile({ goal }: { goal: Goal }) {
     <div className="grid gap-2 p-4 hover:bg-accent-foreground/10 rounded-lg transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h3 className="font-medium text-base leading-6">
+          <h3
+            className={`font-medium text-base leading-6 ${goal.completionPercentage === 100 || goal.status === 'Completed' ? 'line-through text-foreground/50' : ''}`}
+          >
             {goal.title.toLocaleUpperCase()}
           </h3>
           <GoalModal
@@ -78,11 +80,15 @@ export function MainGoalTile({ goal }: { goal: Goal }) {
     <div className="flex justify-between p-4 hover:bg-accent-foreground/10 rounded-lg transition-colors cursor-default">
       <div className="grid gap-10">
         <div>
-          <h3 className="font-medium text-base leading-6">
+          <h3
+            className={`font-medium text-base leading-6 ${goal.completionPercentage === 100 || goal.status === 'Completed' ? 'line-through text-foreground/50' : ''}`}
+          >
             {goal.title.toLocaleUpperCase()} | {goal.completionPercentage}%
             completed
           </h3>
-          <p className="text-sm leading-[21px] text-foreground/70">
+          <p
+            className={`text-sm leading-[21px] ${goal.completionPercentage === 100 || goal.status === 'Completed' ? 'line-through text-foreground/50' : 'text-foreground/70'}`}
+          >
             {goal.description}
           </p>
         </div>

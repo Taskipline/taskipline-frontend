@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const publicRoutes = [
+const neutralRoutes = ['/']
+const guestOnlyRoutes = [
   '/signin',
   '/signup',
   '/forgot-password',
@@ -10,46 +11,53 @@ const publicRoutes = [
   '/waitlist',
 ]
 
+const redirects = {
+  signIn: '/signin',
+  afterAuth: '/dashboard',
+}
+
+function matchPath(path: string, routes: string[]): boolean {
+  return routes.some((r) => {
+    if (r === '/') return path === '/'
+    return path === r || path.startsWith(`${r}/`)
+  })
+}
+
+function isAuthenticated(request: NextRequest): boolean {
+  const raw = request.cookies.get('auth-storage')?.value
+  if (!raw) return false
+  try {
+    const parsed = JSON.parse(raw)
+    return Boolean(parsed?.state?.accessToken)
+  } catch {
+    return false
+  }
+}
+
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
-  const isPublicRoute = publicRoutes.some((publicPath) =>
-    path.startsWith(publicPath)
-  )
+  const authed = isAuthenticated(request)
 
-  const authCookie = request.cookies.get('auth-storage')?.value
+  const isNeutral = matchPath(path, neutralRoutes)
+  const isGuestOnly = matchPath(path, guestOnlyRoutes)
+  const isDefaultProtected = !isNeutral && !isGuestOnly
 
-  let isAuth = false
-  if (authCookie) {
-    try {
-      const { state } = JSON.parse(authCookie)
-      if (state.accessToken) {
-        isAuth = true
-      }
-    } catch {
-      isAuth = false
-    }
+  // Neutral: no auth-based redirects
+  if (isNeutral) return NextResponse.next()
+
+  // Guest-only: redirect authed users away
+  if (isGuestOnly && authed) {
+    return NextResponse.redirect(new URL(redirects.afterAuth, request.nextUrl))
   }
 
-  if (!isPublicRoute && !isAuth) {
-    return NextResponse.redirect(new URL('/signin', request.nextUrl))
-  }
-
-  if (isPublicRoute && isAuth) {
-    return NextResponse.redirect(new URL('/dashboard', request.nextUrl))
+  // Default protected: require auth
+  if (isDefaultProtected && !authed) {
+    return NextResponse.redirect(new URL(redirects.signIn, request.nextUrl))
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }

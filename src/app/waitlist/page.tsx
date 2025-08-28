@@ -67,8 +67,8 @@ export default function LandingPageLayout() {
           />
           <Button
             type="submit"
-            className="mx-auto text-white"
-            variant="secondary"
+            className="mx-auto"
+            variant="default"
             disabled={!validateEmail(email) || mutation.isPending}
           >
             {mutation.isPending ? (

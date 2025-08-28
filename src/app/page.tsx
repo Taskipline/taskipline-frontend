@@ -27,7 +27,7 @@ export default function Home() {
               <CustomHomeCard key={index} icon={perk.icon} text={perk.text} />
             ))}
           </div>
-          <Button className="mx-auto text-white" variant="secondary">
+          <Button className="mx-auto" variant="default">
             <Link href="/waitlist">Join Waitlist</Link>
           </Button>
         </div>

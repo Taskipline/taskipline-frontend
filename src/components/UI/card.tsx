@@ -84,16 +84,23 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
 function CustomHomeCard({
   icon,
   text,
+  description,
 }: {
   icon: React.ReactNode
   text: string
+  description: string
 }) {
   return (
     <>
       <Card>
-        <CardContent className="flex gap-x-3 items-center px-4">
-          {icon}
-          <p className="font-bold text-base leading-5">{text}</p>
+        <CardContent className="grid gap-2">
+          <p className="font-bold text-base leading-5 flex items-center gap-x-2">
+            {icon}
+            {text}
+          </p>
+          <p className="text-sm text-muted-foreground text-left">
+            {description}
+          </p>
         </CardContent>
       </Card>
     </>

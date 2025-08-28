@@ -63,8 +63,11 @@ export default function Header({ auth = false }: { auth?: boolean }) {
             </Link>
           </nav>
           <Button asChild>
-            <Link href="/signin">Sign In</Link>
+            <Link href="/waitlist">Join Waitlist</Link>
           </Button>
+          {/* <Button asChild>
+            <Link href="/signin">Sign In</Link>
+          </Button> */}
           <ModeToggle />
         </div>
 
@@ -99,8 +102,11 @@ export default function Header({ auth = false }: { auth?: boolean }) {
                 </Link>
                 <div className="pt-4">
                   <Button asChild className="w-full">
-                    <Link href="/signin">Sign In</Link>
+                    <Link href="/waitlist">Join Waitlist</Link>
                   </Button>
+                  {/* <Button asChild className="w-full">
+                    <Link href="/signin">Sign In</Link>
+                  </Button> */}
                 </div>
               </nav>
             </SheetContent>

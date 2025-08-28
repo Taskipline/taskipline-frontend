@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Taskipline - Frontend
 
-## Getting Started
+> A discipline-focused productivity platform that unifies tasks, calendar, notes, and goals—powered by AI, gamification, and a customizable experience designed for web and mobile.
 
-First, run the development server:
+This repository contains the frontend for the Taskipline application, built with Next.js and Tailwind CSS.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
+
+## ✨ Key Features
+
+- **Unified Dashboard**: View your tasks, calendar events, and goals all in one place.
+- **Task Management**: Create, organize, and track your daily tasks.
+- **Calendar Integration**: Sync your schedule and never miss an appointment.
+- **Note Taking**: A dedicated space for your thoughts, ideas, and meeting notes.
+- **Goal Tracking**: Set long-term goals and monitor your progress.
+- **Responsive Design**: A seamless experience on both desktop and mobile devices with a collapsible sidebar that supports swipe gestures.
+- **Customizable UI**: Includes a dark/light mode toggle.
+
+## 🚀 Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) 14 (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) v4
+- **UI Components**: Custom-built, inspired by shadcn/ui
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Notifications**: [React Hot Toast](https://react-hot-toast.com/)
+
+## 🛠️ Getting Started
+
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/) (v18.x or later recommended)
+- [npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/), or [pnpm](https://pnpm.io/)
+
+### Installation
+
+1. **Clone the repository:**
+
+    ```sh
+    git clone https://github.com/Taskipline/taskipline-frontend.git
+    cd taskipline-frontend
+    ```
+
+2. **Install dependencies:**
+
+    ```sh
+    npm install
+    ```
+
+3. **Set up environment variables:**
+    Create a file named `.env.local` in the root of your project and add the following line, pointing it to your backend API:
+
+    ```env
+    NEXT_PUBLIC_TASKIPLINE_API=http://localhost:5000/api/v1
+    ```
+
+4. **Run the development server:**
+
+    ```bash
+    npm run dev
+    ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev`: Starts the development server.
+- `npm run build`: Creates a production-ready build of the application.
+- `npm run start`: Starts the production server.
+- `npm run lint`: Runs ESLint to check for code quality issues.

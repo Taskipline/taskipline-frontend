@@ -40,27 +40,12 @@ function Button({
   variant,
   size,
   asChild = false,
-  loading = false,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
-    loading?: boolean
   }) {
   const Comp = asChild ? Slot : 'button'
-
-  // todo review this loading state
-  if (loading) {
-    return (
-      <button
-        className={cn(buttonVariants({ variant, size, className }))}
-        disabled
-        {...props}
-      >
-        <span className="animate-spin">Loading...</span>
-      </button>
-    )
-  }
 
   return (
     <Comp

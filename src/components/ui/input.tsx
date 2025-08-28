@@ -19,3 +19,42 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
 }
 
 export { Input }
+
+import { Label } from '@/components/ui/label'
+import { Button } from './button'
+
+export function CustomInput({
+  label,
+  htmlFor,
+  type,
+  rightIcon,
+  onRightIconClick,
+  width = 'max-w-sm',
+  ...inputProps
+}: {
+  label?: string
+  htmlFor?: string
+  rightIcon?: React.ReactNode
+  onRightIconClick?: () => void
+  width?: string
+} & React.ComponentProps<'input'>) {
+  return (
+    <div className={`grid w-full ${width} items-center gap-3`}>
+      {label && <Label htmlFor={htmlFor}>{label}</Label>}
+      <div className="relative">
+        <Input type={type} {...inputProps} />
+        {rightIcon && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="absolute right-0 bottom-0"
+            onClick={onRightIconClick}
+          >
+            {rightIcon}
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+}

@@ -1,50 +1,53 @@
 'use client'
 
-import { Button } from '@/components/UI/button'
-import Header from '@/components/UI/header'
-import { Input } from '@/components/UI/input'
+import { Button } from '@/components/ui/button'
+import Header from '@/components/header'
+import { Input } from '@/components/ui/input'
 import Image from 'next/image'
-import waitlistImage from '@/components/UI/Images/waitlist.png'
+import waitlistImage from '@/components/ui/Images/waitlist.png'
 import { useState } from 'react'
 import { notify, validateEmail } from '@/utilities/common'
 import { joinWaitlist } from '@/services/waitlistService'
 import { Loader } from 'lucide-react'
 import { ApiError } from '@/lib/errors'
+import { useMutation } from '@tanstack/react-query'
 
 export default function LandingPageLayout() {
   const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
-    try {
-      const response = await joinWaitlist(email)
+  const mutation = useMutation({
+    mutationFn: joinWaitlist,
+    onSuccess: (response) => {
       notify('success', response.message || 'Successfully joined waitlist!')
       setEmail('')
-      console.log('Waitlist JSON response:', response)
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
-        notify('info', 'You are already on the waitlist.')
-        console.error('Error joining waitlist: Email already exists (409)')
-      } else if (err instanceof Error) {
-        notify('error', err.message || 'Error joining waitlist')
-        console.error('Error joining waitlist:', err.message)
+    },
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        if (error.statusCode === 409) {
+          notify('info', 'You are already on the waitlist!')
+        } else {
+          notify('error', error.message)
+        }
       } else {
-        notify('error', 'An unknown error occurred')
-        console.error('Unknown error:', err)
+        notify('error', 'An unexpected error occurred.')
       }
-    } finally {
-      setLoading(false)
-    }
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    mutation.mutate(email)
   }
+
   return (
     <div>
       <Header />
       <div className="grid py-10 px-4 gap-4">
         <Image src={waitlistImage} alt="Join waitlist" className="mx-auto" />
-        <div className="grid gap-y-4 text-center justify-center">
+        <form
+          onSubmit={handleSubmit}
+          className="grid gap-y-4 text-center justify-center"
+        >
           <h2 className="font-bold text-[28px] leading-[35px]">
             Join the Taskipline Waitlist
           </h2>
@@ -56,19 +59,25 @@ export default function LandingPageLayout() {
           <Input
             className="w-60 md:w-[480px] mx-auto"
             placeholder="Email Address"
+            id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={mutation.isPending}
           />
           <Button
-            className="mx-auto text-white"
-            variant="secondary"
-            onClick={handleSubmit}
-            disabled={!validateEmail(email) || loading}
+            type="submit"
+            className="mx-auto"
+            variant="default"
+            disabled={!validateEmail(email) || mutation.isPending}
           >
-            {loading ? <Loader className="animate-spin" /> : 'Join Waitlist'}
+            {mutation.isPending ? (
+              <Loader className="animate-spin" />
+            ) : (
+              'Join Waitlist'
+            )}
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   )

@@ -12,13 +12,11 @@ import { Button } from '@/components/ui/button'
 import { CustomInput } from '@/components/ui/input'
 import Title from '@/components/title'
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import { useParams } from 'next/navigation'
 
-export default function VerifyAccountPage({
-  params,
-}: {
-  params: { token: string }
-}) {
-  const { token } = params
+export default function VerifyAccountPage() {
+  const params = useParams()
+  const token = params.token as string
 
   const verificationStarted = useRef(false)
 

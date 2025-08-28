@@ -11,15 +11,12 @@ import { useMutation } from '@tanstack/react-query'
 import { resetPassword } from '@/services/authService'
 import { ApiError } from '@/lib/errors'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
-export default function ResetPassword({
-  params,
-}: {
-  params: { token: string }
-}) {
-  const { token } = params
+export default function ResetPassword() {
   const router = useRouter()
+  const params = useParams()
+  const token = params.token as string
 
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')

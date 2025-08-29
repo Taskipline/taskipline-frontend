@@ -34,6 +34,7 @@ export default function GoalTile({ goal }: { goal: Goal }) {
             type="view"
             callToActionButtonVariant="link"
             callToActionButtonContent={<ArrowUpRight className="size-5" />}
+            goalId={goal._id}
           />
         </div>
         <p className="text-sm leading-[21px]">{goal.completionPercentage}%</p>

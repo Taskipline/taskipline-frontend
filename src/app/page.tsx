@@ -2,7 +2,14 @@ import Image from 'next/image'
 import waitlistImage from '@/components/ui/Images/home.png'
 import Header from '@/components/header'
 import { CustomHomeCard } from '@/components/ui/card'
-import { Calendar1, Gamepad2, Goal, List, NotebookPen } from 'lucide-react'
+import {
+  Calendar1,
+  Gamepad2,
+  Goal,
+  List,
+  MailPlusIcon,
+  NotebookPen,
+} from 'lucide-react'
 import Link from 'next/link'
 import Title from '@/components/title'
 import WaitlistModal from '@/components/waitlist/waitlist-modal'
@@ -138,5 +145,11 @@ const taskiplinePerks = [
     text: 'Gamification',
     description:
       'You can stay motivated with streaks and leaderboard systems that motivates you to want to achieve your goals and complete your tasks overtime.',
+  },
+  {
+    icon: <MailPlusIcon className="size-4" />,
+    text: 'Email to tasks',
+    description:
+      'You can connect your email to the platform and be rest assured every new email you get is converted to a task automatically.',
   },
 ]

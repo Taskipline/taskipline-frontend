@@ -17,12 +17,12 @@ export default function Header({ auth = false }: { auth?: boolean }) {
           <TextAndLogo />
           <div className="flex items-center gap-2">
             {pathName === '/signup' ? (
-              <Button asChild>
+              <Button asChild variant="outline">
                 <Link href="/signin">Sign In</Link>
               </Button>
             ) : (
               pathName === '/signin' && (
-                <Button asChild>
+                <Button asChild variant="outline">
                   <Link href="/signup">Signup</Link>
                 </Button>
               )

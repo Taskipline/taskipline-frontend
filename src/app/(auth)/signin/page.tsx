@@ -81,7 +81,10 @@ export default function Signin() {
           disabled={mutation.isPending}
         />
         <Label>
-          <Link href="/forgot-password" className="text-primary">
+          <Link
+            href="/forgot-password"
+            className="text-primary font-normal underline italic"
+          >
             Forgot password?
           </Link>
         </Label>
@@ -96,7 +99,7 @@ export default function Signin() {
             'Sign in'
           )}
         </Button>
-        <Label className="mx-auto">Or Sign In With</Label>
+        <Label className="mx-auto font-normal">Or Sign In With</Label>
         <div className="grid grid-cols-2 gap-2 justify-between">
           <Button className="rounded-[20px]" variant="secondary" asChild>
             <Link href="#google-sign-in">

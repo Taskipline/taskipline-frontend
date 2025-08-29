@@ -119,7 +119,7 @@ export default function Signup() {
             onCheckedChange={(checked) => setAgreedToTerms(Boolean(checked))}
             disabled={mutation.isPending}
           />
-          <Label htmlFor="terms">
+          <Label htmlFor="terms" className="font-normal">
             I agree to the{' '}
             <Link href="#terms" className="text-primary">
               Terms of service
@@ -148,7 +148,7 @@ export default function Signup() {
             'Create Account'
           )}
         </Button>
-        <Label className="mx-auto">Or Sign Up With</Label>
+        <Label className="mx-auto font-normal">Or Sign Up With</Label>
         <div className="grid grid-cols-2 gap-2 justify-between">
           <Button className="rounded-[20px]" variant="secondary" asChild>
             <Link href="#google-sign-in">

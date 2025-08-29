@@ -104,7 +104,7 @@ export default function ResetPassword() {
           disabled={mutation.isPending}
           required
         />
-        <Label>
+        <Label className="font-normal">
           Password must be at least 8 characters long and include a mix of
           letters, numbers, and symbols.
         </Label>

@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import waitlistImage from '@/components/ui/Images/home.png'
 import Header from '@/components/header'
@@ -6,6 +5,7 @@ import { CustomHomeCard } from '@/components/ui/card'
 import { Calendar1, Gamepad2, Goal, List, NotebookPen } from 'lucide-react'
 import Link from 'next/link'
 import Title from '@/components/title'
+import WaitlistModal from '@/components/waitlist/waitlist-modal'
 
 export default function Home() {
   return (
@@ -24,9 +24,9 @@ export default function Home() {
               gamification, and a customizable experience designed for web and
               mobile.
             </p>
-            <Button className="w-fit" variant="default" size="lg">
-              <Link href="/waitlist">Join Waitlist</Link>
-            </Button>
+            <div className="text-left">
+              <WaitlistModal />
+            </div>
           </section>
           <section className="grid gap-6">
             <Title text="Explore the features" type="sub-heading" />

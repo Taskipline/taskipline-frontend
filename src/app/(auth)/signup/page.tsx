@@ -12,6 +12,7 @@ import { Eye, EyeOff, Loader2, MailCheck } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import { signup } from '@/services/authService'
 import { ApiError } from '@/lib/errors'
+import { FaGoogle, FaGithub } from 'react-icons/fa'
 
 export default function Signup() {
   const [firstName, setFirstName] = useState('')
@@ -118,7 +119,7 @@ export default function Signup() {
             onCheckedChange={(checked) => setAgreedToTerms(Boolean(checked))}
             disabled={mutation.isPending}
           />
-          <Label htmlFor="terms">
+          <Label htmlFor="terms" className="font-normal">
             I agree to the{' '}
             <Link href="#terms" className="text-primary">
               Terms of service
@@ -147,13 +148,19 @@ export default function Signup() {
             'Create Account'
           )}
         </Button>
-        <Label className="mx-auto">Or Sign Up With</Label>
+        <Label className="mx-auto font-normal">Or Sign Up With</Label>
         <div className="grid grid-cols-2 gap-2 justify-between">
           <Button className="rounded-[20px]" variant="secondary" asChild>
-            <Link href="#google-sign-in">Google</Link>
+            <Link href="#google-sign-in">
+              <FaGoogle />
+              Google
+            </Link>
           </Button>
           <Button className="rounded-[20px]" variant="secondary" asChild>
-            <Link href="#github-sign-in">Github</Link>
+            <Link href="#github-sign-in">
+              <FaGithub />
+              Github
+            </Link>
           </Button>
         </div>
       </form>

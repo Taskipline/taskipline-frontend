@@ -13,6 +13,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useMutation } from '@tanstack/react-query'
 import { signin } from '@/services/authService'
 import { ApiError } from '@/lib/errors'
+import { FaGoogle, FaGithub } from 'react-icons/fa'
 
 export default function Signin() {
   const router = useRouter()
@@ -80,7 +81,10 @@ export default function Signin() {
           disabled={mutation.isPending}
         />
         <Label>
-          <Link href="/forgot-password" className="text-primary">
+          <Link
+            href="/forgot-password"
+            className="text-primary font-normal underline italic"
+          >
             Forgot password?
           </Link>
         </Label>
@@ -95,13 +99,19 @@ export default function Signin() {
             'Sign in'
           )}
         </Button>
-        <Label className="mx-auto">Or Sign In With</Label>
+        <Label className="mx-auto font-normal">Or Sign In With</Label>
         <div className="grid grid-cols-2 gap-2 justify-between">
           <Button className="rounded-[20px]" variant="secondary" asChild>
-            <Link href="#google-sign-in">Google</Link>
+            <Link href="#google-sign-in">
+              <FaGoogle />
+              Google
+            </Link>
           </Button>
           <Button className="rounded-[20px]" variant="secondary" asChild>
-            <Link href="#github-sign-in">Github</Link>
+            <Link href="#github-sign-in">
+              <FaGithub />
+              Github
+            </Link>
           </Button>
         </div>
       </form>

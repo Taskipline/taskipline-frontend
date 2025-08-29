@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 import { Menu } from 'lucide-react'
 import { ModeToggle } from './mode-toggle'
 import { usePathname } from 'next/navigation'
+import WaitlistModal from './waitlist/waitlist-modal'
 
 export default function Header({ auth = false }: { auth?: boolean }) {
   const pathName = usePathname()
@@ -17,12 +18,12 @@ export default function Header({ auth = false }: { auth?: boolean }) {
           <TextAndLogo />
           <div className="flex items-center gap-2">
             {pathName === '/signup' ? (
-              <Button asChild>
+              <Button asChild variant="outline">
                 <Link href="/signin">Sign In</Link>
               </Button>
             ) : (
               pathName === '/signin' && (
-                <Button asChild>
+                <Button asChild variant="outline">
                   <Link href="/signup">Signup</Link>
                 </Button>
               )
@@ -62,9 +63,7 @@ export default function Header({ auth = false }: { auth?: boolean }) {
               Resources
             </Link>
           </nav>
-          <Button asChild>
-            <Link href="/waitlist">Join Waitlist</Link>
-          </Button>
+          <WaitlistModal />
           {/* <Button asChild>
             <Link href="/signin">Sign In</Link>
           </Button> */}
@@ -101,9 +100,7 @@ export default function Header({ auth = false }: { auth?: boolean }) {
                   Resources
                 </Link>
                 <div className="pt-4">
-                  <Button asChild className="w-full">
-                    <Link href="/waitlist">Join Waitlist</Link>
-                  </Button>
+                  <WaitlistModal />
                   {/* <Button asChild className="w-full">
                     <Link href="/signin">Sign In</Link>
                   </Button> */}

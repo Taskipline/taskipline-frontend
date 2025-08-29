@@ -39,8 +39,12 @@ export function CustomInput({
   width?: string
 } & React.ComponentProps<'input'>) {
   return (
-    <div className={`grid w-full ${width} items-center gap-3`}>
-      {label && <Label htmlFor={htmlFor}>{label}</Label>}
+    <div className={`grid w-full ${width} items-center gap-1`}>
+      {label && (
+        <Label htmlFor={htmlFor} className="font-medium">
+          {label}
+        </Label>
+      )}
       <div className="relative">
         <Input type={type} {...inputProps} />
         {rightIcon && (

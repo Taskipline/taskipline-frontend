@@ -64,7 +64,7 @@ export default function ForgotPassword() {
         textAlignment="text-center"
       />
       <form onSubmit={handleSendResetLink} className="grid gap-4 w-sm mx-auto">
-        <Label className="text-center mx-auto leading-6">
+        <Label className="text-center mx-auto leading-6 font-normal">
           Enter the email address associated with your account and we&apos;ll
           send you a link to reset your password.
         </Label>
@@ -88,9 +88,9 @@ export default function ForgotPassword() {
             'Send Reset Link'
           )}
         </Button>
-        <Label className="text-center mx-auto">
+        <Label className="text-center mx-auto font-normal">
           Remember your password?{' '}
-          <Link href="/signin" className="text-primary">
+          <Link href="/signin" className="text-primary underline italic">
             Sign In
           </Link>
         </Label>

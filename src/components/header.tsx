@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import { Button } from './ui/button'
 import TaskiplineLogo from './ui/Icons/taskipline-logo'
-import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
-import { Menu } from 'lucide-react'
 import { ModeToggle } from './mode-toggle'
 import { usePathname } from 'next/navigation'
 import WaitlistModal from './waitlist/waitlist-modal'
@@ -44,7 +42,7 @@ export default function Header({ auth = false }: { auth?: boolean }) {
         {/* Desktop Navigation - Right Side */}
         <div className="hidden md:flex md:absolute right-0 items-center space-x-6">
           <nav className="flex items-center space-x-6">
-            <Link
+            {/* <Link
               href="#product"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
@@ -61,9 +59,9 @@ export default function Header({ auth = false }: { auth?: boolean }) {
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Resources
-            </Link>
+            </Link> */}
           </nav>
-          <WaitlistModal />
+          <WaitlistModal ctaSize="default" />
           {/* <Button asChild>
             <Link href="/signin">Sign In</Link>
           </Button> */}
@@ -71,8 +69,8 @@ export default function Header({ auth = false }: { auth?: boolean }) {
         </div>
 
         {/* Mobile Navigation */}
-        <div className="flex md:hidden">
-          <Sheet>
+        <div className="flex md:hidden gap-2">
+          {/* <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
@@ -100,14 +98,14 @@ export default function Header({ auth = false }: { auth?: boolean }) {
                   Resources
                 </Link>
                 <div className="pt-4">
-                  <WaitlistModal />
-                  {/* <Button asChild className="w-full">
+                  <Button asChild className="w-full">
                     <Link href="/signin">Sign In</Link>
-                  </Button> */}
+                  </Button>
                 </div>
               </nav>
             </SheetContent>
-          </Sheet>
+          </Sheet> */}
+          <WaitlistModal ctaSize="default" />
           <ModeToggle />
         </div>
       </div>

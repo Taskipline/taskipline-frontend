@@ -452,7 +452,7 @@ function GoalDropdown({
           placeholder="Select priority"
           value={
             goalId
-              ? goalId.charAt(0).toUpperCase() + goalId.slice(1)
+              ? goals?.find((g) => g._id === goalId)?.title || ''
               : 'Select goal'
           }
           readOnly

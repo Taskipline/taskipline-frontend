@@ -19,7 +19,11 @@ import { useMutation } from '@tanstack/react-query'
 import { Loader } from 'lucide-react'
 import { useState } from 'react'
 
-export default function WaitlistModal() {
+export default function WaitlistModal({
+  ctaSize = 'lg',
+}: {
+  ctaSize?: 'default' | 'lg'
+}) {
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
 
@@ -51,7 +55,11 @@ export default function WaitlistModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-fit cursor-pointer" variant="default" size="lg">
+        <Button
+          className="w-fit cursor-pointer"
+          variant="default"
+          size={ctaSize}
+        >
           Join Waitlist
         </Button>
       </DialogTrigger>
@@ -68,6 +76,7 @@ export default function WaitlistModal() {
           <div className="grid gap-4">
             <CustomInput
               className=""
+              width="w-full"
               placeholder="Email Address"
               id="email"
               type="email"

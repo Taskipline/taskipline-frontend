@@ -211,36 +211,36 @@ export default function GoalModal({
     onSettled: () => {},
   })
 
-  const toggleGoalCompletionMutation = useMutation({
-    mutationFn: (goal: Goal) =>
-      updateGoal(goal._id, {
-        ...goal,
-        status: goal.status === 'In Progress' ? 'Completed' : 'In Progress',
-      }),
-    onMutate: async (g) => {
-      await queryClient.cancelQueries({ queryKey: ['goals'] })
-      const previousGoals = queryClient.getQueryData<Goal[]>(['goals'])
-      const nextStatus =
-        g.status === 'In Progress' ? 'Completed' : 'In Progress'
-      queryClient.setQueryData<Goal[]>(['goals'], (old) =>
-        (old ?? []).map((x) =>
-          x._id === g._id ? { ...x, status: nextStatus } : x
-        )
-      )
-      return { previousGoals }
-    },
-    onError: (_err, _vars, context) => {
-      if (context?.previousGoals) {
-        queryClient.setQueryData(['goals'], context.previousGoals)
-      }
-      notify('error', 'Failed to update status. Changes were rolled back.')
-    },
-    onSuccess: () => {
-      notify('success', 'Goal status updated successfully.')
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
-    },
-    onSettled: () => {},
-  })
+  // const toggleGoalCompletionMutation = useMutation({
+  //   mutationFn: (goal: Goal) =>
+  //     updateGoal(goal._id, {
+  //       ...goal,
+  //       status: goal.status === 'In Progress' ? 'Completed' : 'In Progress',
+  //     }),
+  //   onMutate: async (g) => {
+  //     await queryClient.cancelQueries({ queryKey: ['goals'] })
+  //     const previousGoals = queryClient.getQueryData<Goal[]>(['goals'])
+  //     const nextStatus =
+  //       g.status === 'In Progress' ? 'Completed' : 'In Progress'
+  //     queryClient.setQueryData<Goal[]>(['goals'], (old) =>
+  //       (old ?? []).map((x) =>
+  //         x._id === g._id ? { ...x, status: nextStatus } : x
+  //       )
+  //     )
+  //     return { previousGoals }
+  //   },
+  //   onError: (_err, _vars, context) => {
+  //     if (context?.previousGoals) {
+  //       queryClient.setQueryData(['goals'], context.previousGoals)
+  //     }
+  //     notify('error', 'Failed to update status. Changes were rolled back.')
+  //   },
+  //   onSuccess: () => {
+  //     notify('success', 'Goal status updated successfully.')
+  //     queryClient.invalidateQueries({ queryKey: ['goals'] })
+  //   },
+  //   onSettled: () => {},
+  // })
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -294,9 +294,10 @@ export default function GoalModal({
                   description: normalize.description(description),
                   dueDate: normalize.dateIsoFromLocal(dueDateLocal),
                 })
-              } else if (type === 'view' && originalGoal) {
-                toggleGoalCompletionMutation.mutate(originalGoal)
               }
+              // else if (type === 'view' && originalGoal) {
+              //   toggleGoalCompletionMutation.mutate(originalGoal)
+              // }
             }}
           >
             <div className="grid gap-4 p-2 max-h-[60vh] md:max-h-[70vh] overflow-y-auto">

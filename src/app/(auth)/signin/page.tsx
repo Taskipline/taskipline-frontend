@@ -11,9 +11,11 @@ import { useState } from 'react'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useMutation } from '@tanstack/react-query'
-import { signin } from '@/services/authService'
+import { signin, signInWithGoogle } from '@/services/authService'
 import { ApiError } from '@/lib/errors'
 import { FaGoogle, FaGithub } from 'react-icons/fa'
+import { useGoogleLogin } from '@react-oauth/google'
+import { redirectUri } from '@/lib/env'
 
 export default function Signin() {
   const router = useRouter()
@@ -40,6 +42,22 @@ export default function Signin() {
     },
   })
 
+  const signInWithGoogleMutation = useMutation({
+    mutationFn: signInWithGoogle,
+    onSuccess: (data) => {
+      setAuth(data.accessToken, data.user)
+      notify('success', 'Google login successful!')
+      router.push('/dashboard')
+    },
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        notify('error', error.message)
+      } else {
+        notify('error', 'An unexpected error occurred.')
+      }
+    },
+  })
+
   const handleSignin = (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !password) {
@@ -48,6 +66,26 @@ export default function Signin() {
     }
     mutation.mutate({ email, password })
   }
+
+  const googleAuth = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      try {
+        signInWithGoogleMutation.mutate({
+          code: codeResponse.code,
+        })
+      } catch (error) {
+        console.error('Error with Google auth:', error)
+        notify('error', 'Failed to process Google authentication.')
+      }
+    },
+    flow: 'auth-code',
+    redirect_uri: redirectUri,
+    onError: (error) => {
+      console.error('Google login error:', error)
+      notify('error', 'Google sign-in failed.')
+    },
+    scope: 'openid profile email',
+  })
 
   return (
     <div className="grid gap-6">
@@ -101,13 +139,26 @@ export default function Signin() {
         </Button>
         <Label className="mx-auto font-normal">Or Sign In With</Label>
         <div className="grid grid-cols-2 gap-2 justify-between">
-          <Button className="rounded-[20px]" variant="secondary" asChild>
-            <Link href="#google-sign-in">
-              <FaGoogle />
-              Google
-            </Link>
+          <Button
+            className="rounded-[20px] cursor-pointer"
+            variant="secondary"
+            onClick={() => googleAuth()}
+            type="button"
+            disabled={signInWithGoogleMutation.isPending}
+          >
+            <FaGoogle />
+            {signInWithGoogleMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              'Google'
+            )}
           </Button>
-          <Button className="rounded-[20px]" variant="secondary" asChild>
+          <Button
+            className="rounded-[20px] cursor-pointer"
+            variant="secondary"
+            type="button"
+            asChild
+          >
             <Link href="#github-sign-in">
               <FaGithub />
               Github

@@ -1,6 +1,7 @@
 import apiClient from '@/lib/apiClient'
 import {
   ForgotPasswordResponse,
+  GoogleAuthPayload,
   LoginCredentials,
   LoginResponse,
   ResendLinkResponse,
@@ -60,4 +61,14 @@ export const resetPassword = async (
     password: credentials.password,
     confirmPassword: credentials.confirmPassword,
   })
+}
+
+export const signInWithGoogle = async (
+  payload: GoogleAuthPayload
+): Promise<LoginResponse> => {
+  const response = await apiClient.post<LoginResponse>(
+    '/auth/google/callback',
+    payload
+  )
+  return response.data
 }

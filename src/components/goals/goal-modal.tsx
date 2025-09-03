@@ -23,7 +23,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createGoal, listGoals, updateGoal } from '@/services/goalService'
 import type { CreateGoalTaskInput } from '@/services/goalService'
 import { Task } from '@/types/tasks'
-import { notify, randomId, toIsoOrUndefined } from '@/utilities/common'
+import {
+  isoToLocalInput,
+  notify,
+  randomId,
+  toIsoOrUndefined,
+} from '@/utilities/common'
 import { Goal } from '@/types/goal'
 import TaskTile from '../tasks/task-tile'
 
@@ -68,7 +73,7 @@ export default function GoalModal({
     } else if ((type === 'edit' || type === 'view') && originalGoal) {
       setTitle(originalGoal.title || '')
       setDescription(originalGoal.description || '')
-      setDueDateLocal(originalGoal.dueDate || '')
+      setDueDateLocal(isoToLocalInput(originalGoal.dueDate))
       setSubTasksEnabled(originalGoal.tasks.length > 0)
       setSubTasks(originalGoal.tasks)
     }

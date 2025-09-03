@@ -7,7 +7,7 @@ import { type Goal } from '@/types/goal'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { deleteGoal } from '@/services/goalService'
-import { notify } from '@/utilities/common'
+import { formatDueDate, notify } from '@/utilities/common'
 import {
   Dialog,
   DialogClose,
@@ -28,7 +28,8 @@ export default function GoalTile({ goal }: { goal: Goal }) {
           <h3
             className={`font-medium text-base leading-6 ${goal.completionPercentage === 100 || goal.status === 'Completed' ? 'line-through text-foreground/50' : ''}`}
           >
-            {goal.title.toLocaleUpperCase()}
+            {goal.title.toLocaleUpperCase()}{' '}
+            <span className="font-normal">| {formatDueDate(goal.dueDate)}</span>
           </h3>
           <GoalModal
             type="view"
@@ -84,8 +85,12 @@ export function MainGoalTile({ goal }: { goal: Goal }) {
           <h3
             className={`font-medium text-base leading-6 ${goal.completionPercentage === 100 || goal.status === 'Completed' ? 'line-through text-foreground/50' : ''}`}
           >
-            {goal.title.toLocaleUpperCase()} | {goal.completionPercentage}%
-            completed
+            {goal.title.toLocaleUpperCase()}{' '}
+            <span className="font-normal">
+              {' '}
+              | {goal.completionPercentage}% completed |{' '}
+              {formatDueDate(goal.dueDate)}{' '}
+            </span>
           </h3>
           <p
             className={`text-sm leading-[21px] ${goal.completionPercentage === 100 || goal.status === 'Completed' ? 'line-through text-foreground/50' : 'text-foreground/70'}`}

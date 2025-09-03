@@ -1,6 +1,6 @@
 'use client'
 
-import { Edit, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import Title from '../title'
 import { Button } from '../ui/button'
 import {
@@ -36,9 +36,9 @@ export default function MainSettingsSection() {
   return (
     <section className="grid gap-4">
       <Title text="Profile" type="sub-heading-2" />
-      <div className="bg-secondary size-20 rounded-full flex items-center justify-center">
+      {/* <div className="bg-secondary size-20 rounded-full flex items-center justify-center">
         <UpdateProfilePictureDialog />
-      </div>
+      </div> */}
       <div className="flex gap-4 max-w-sm">
         <CustomInput
           label="First Name"
@@ -184,31 +184,31 @@ function UpdateProfileDialog() {
   )
 }
 
-function UpdateProfilePictureDialog() {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="cursor-pointer">
-          <Edit className="size-5 cursor-pointer" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Update Profile Picture</DialogTitle>
-          <DialogDescription>
-            Upload a new profile picture or update the existing one.
-          </DialogDescription>
-        </DialogHeader>
-        <CustomInput htmlFor="picture" type="file" />
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <Button type="submit" disabled>
-            Save changes
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
+// function UpdateProfilePictureDialog() {
+//   return (
+//     <Dialog>
+//       <DialogTrigger asChild>
+//         <Button variant="ghost" size="icon" className="cursor-pointer">
+//           <Edit className="size-5 cursor-pointer" />
+//         </Button>
+//       </DialogTrigger>
+//       <DialogContent className="sm:max-w-[425px]">
+//         <DialogHeader>
+//           <DialogTitle>Update Profile Picture</DialogTitle>
+//           <DialogDescription>
+//             Upload a new profile picture or update the existing one.
+//           </DialogDescription>
+//         </DialogHeader>
+//         <CustomInput htmlFor="picture" type="file" />
+//         <DialogFooter>
+//           <DialogClose asChild>
+//             <Button variant="outline">Cancel</Button>
+//           </DialogClose>
+//           <Button type="submit" disabled>
+//             Save changes
+//           </Button>
+//         </DialogFooter>
+//       </DialogContent>
+//     </Dialog>
+//   )
+// }

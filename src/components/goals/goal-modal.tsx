@@ -23,9 +23,15 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createGoal, listGoals, updateGoal } from '@/services/goalService'
 import type { CreateGoalTaskInput } from '@/services/goalService'
 import { Task } from '@/types/tasks'
-import { notify, randomId, toIsoOrUndefined } from '@/utilities/common'
+import {
+  isoToLocalInput,
+  notify,
+  randomId,
+  toIsoOrUndefined,
+} from '@/utilities/common'
 import { Goal } from '@/types/goal'
 import TaskTile from '../tasks/task-tile'
+import { updateTask } from '@/services/taskService'
 
 export default function GoalModal({
   type,
@@ -52,6 +58,9 @@ export default function GoalModal({
   const [subTasksEnabled, setSubTasksEnabled] = useState(false)
   const [subTasks, setSubTasks] = useState<Task[] | undefined>(undefined)
   const [editSubtaskId, setEditSubtaskId] = useState<string>(randomId())
+  const [modifiedTasks, setModifiedTasks] = useState<Record<string, boolean>>(
+    {}
+  )
 
   const originalGoal = useMemo(
     () => (goalId ? goal?.find((g) => g._id === goalId) : undefined),
@@ -68,11 +77,37 @@ export default function GoalModal({
     } else if ((type === 'edit' || type === 'view') && originalGoal) {
       setTitle(originalGoal.title || '')
       setDescription(originalGoal.description || '')
-      setDueDateLocal(originalGoal.dueDate || '')
+      setDueDateLocal(isoToLocalInput(originalGoal.dueDate))
       setSubTasksEnabled(originalGoal.tasks.length > 0)
       setSubTasks(originalGoal.tasks)
     }
   }, [open, type, originalGoal])
+
+  // Track task modifications when they change
+  useEffect(() => {
+    if (type === 'edit' && originalGoal && subTasks) {
+      const modified: Record<string, boolean> = {}
+
+      // Track which tasks have been modified from their original state
+      subTasks.forEach((task) => {
+        if (!task.id) return
+
+        const original = originalGoal.tasks.find((t) => t.id === task.id)
+        if (original) {
+          const isModified =
+            task.title !== original.title ||
+            task.description !== original.description ||
+            task.dueDate !== original.dueDate
+
+          if (isModified) {
+            modified[task.id] = true
+          }
+        }
+      })
+
+      setModifiedTasks(modified)
+    }
+  }, [subTasks, originalGoal, type, setModifiedTasks])
 
   const normalize = {
     title: (v: string) => v.trim(),
@@ -242,6 +277,38 @@ export default function GoalModal({
   //   onSettled: () => {},
   // })
 
+  // Add task update mutation for updating sub-tasks
+  const updateTasksMutation = useMutation({
+    mutationFn: async (tasks: Task[]) => {
+      // Process all task updates in parallel
+      return Promise.all(tasks.map((task) => updateTask(task.id, task)))
+    },
+    onMutate: async (tasksToUpdate) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks'] })
+      const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+
+      // Optimistically update tasks cache
+      queryClient.setQueryData<Task[]>(['tasks'], (old = []) => {
+        return old.map((task) => {
+          const updated = tasksToUpdate.find((t) => t.id === task.id)
+          return updated ? { ...task, ...updated } : task
+        })
+      })
+
+      return { previousTasks }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context.previousTasks)
+      }
+      notify('error', 'Failed to update sub-tasks. Changes were rolled back.')
+    },
+    onSuccess: () => {
+      notify('success', 'Sub-tasks updated successfully.')
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+    },
+  })
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -274,7 +341,7 @@ export default function GoalModal({
             )}
           </DialogHeader>
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault()
               if (type === 'create') {
                 const cleaned = subTasksEnabled
@@ -287,13 +354,45 @@ export default function GoalModal({
                   tasks: cleaned,
                 })
               } else if (type === 'edit' && originalGoal) {
-                // Do not send tasks on PATCH (server supports title/description/dueDate/status)
-                updateMutation.mutate({
-                  _id: originalGoal._id,
-                  title: normalize.title(title),
-                  description: normalize.description(description),
-                  dueDate: normalize.dateIsoFromLocal(dueDateLocal),
-                })
+                // Start both mutations simultaneously
+                const promises = []
+
+                // 1. Update the goal itself
+                promises.push(
+                  updateMutation.mutateAsync({
+                    _id: originalGoal._id,
+                    title: normalize.title(title),
+                    description: normalize.description(description),
+                    dueDate: normalize.dateIsoFromLocal(dueDateLocal),
+                  })
+                )
+
+                // 2. Update modified tasks
+                const tasksToUpdate = (subTasks ?? [])
+                  .filter((task) => task.id && modifiedTasks[task.id])
+                  .map((task) => ({
+                    id: task.id,
+                    title: task.title,
+                    description: task.description || '',
+                    dueDate: toIsoOrUndefined(task.dueDate) || undefined,
+                    // Preserve existing values
+                    priority: task.priority || 'low',
+                    isCompleted: task.isCompleted || false,
+                    goal: originalGoal._id,
+                  }))
+
+                if (tasksToUpdate.length > 0) {
+                  promises.push(updateTasksMutation.mutateAsync(tasksToUpdate))
+                }
+
+                // Wait for all updates to complete
+                try {
+                  await Promise.all(promises)
+                  setOpen(false)
+                } catch (error) {
+                  // Error handling is done in the individual mutations
+                  console.error('Update failed:', error)
+                }
               }
               // else if (type === 'view' && originalGoal) {
               //   toggleGoalCompletionMutation.mutate(originalGoal)
@@ -568,9 +667,16 @@ export default function GoalModal({
                     <Button
                       type="submit"
                       className="rounded-[20px]"
-                      disabled={!isFormChanged || updateMutation.isPending}
+                      disabled={
+                        (!isFormChanged &&
+                          Object.keys(modifiedTasks).length === 0) ||
+                        updateMutation.isPending ||
+                        updateTasksMutation.isPending
+                      }
                     >
-                      {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+                      {updateMutation.isPending || updateTasksMutation.isPending
+                        ? 'Saving...'
+                        : 'Save Changes'}
                     </Button>
                   </>
                 )

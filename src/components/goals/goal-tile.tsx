@@ -7,7 +7,7 @@ import { type Goal } from '@/types/goal'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { deleteGoal } from '@/services/goalService'
-import { notify } from '@/utilities/common'
+import { formatDueDate, notify } from '@/utilities/common'
 import {
   Dialog,
   DialogClose,
@@ -85,7 +85,7 @@ export function MainGoalTile({ goal }: { goal: Goal }) {
             className={`font-medium text-base leading-6 ${goal.completionPercentage === 100 || goal.status === 'Completed' ? 'line-through text-foreground/50' : ''}`}
           >
             {goal.title.toLocaleUpperCase()} | {goal.completionPercentage}%
-            completed
+            completed | {formatDueDate(goal.dueDate)}
           </h3>
           <p
             className={`text-sm leading-[21px] ${goal.completionPercentage === 100 || goal.status === 'Completed' ? 'line-through text-foreground/50' : 'text-foreground/70'}`}

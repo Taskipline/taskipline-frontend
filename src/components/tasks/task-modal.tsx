@@ -441,7 +441,6 @@ function GoalDropdown({
   const { data: goals, isLoading: isFetchingGoals } = useQuery({
     queryKey: ['goals'],
     queryFn: listGoals,
-    enabled: type !== 'create',
   })
 
   return (
@@ -471,7 +470,9 @@ function GoalDropdown({
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup
               value={goals?.find((g) => g._id === goalId)?.title}
-              onValueChange={(value) => setGoalId(value as string)}
+              onValueChange={(value) =>
+                setGoalId(goals?.find((g) => g.title === value)?._id)
+              }
             >
               {goals?.map((taskPriority) => (
                 <DropdownMenuRadioItem

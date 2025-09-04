@@ -61,7 +61,7 @@ export default function TaskModal({
 
   const [open, setOpen] = useState(false)
   const [priority, setPriority] = useState<TaskPriority>('medium')
-  const [goalId, setGoalId] = useState<string | undefined>(undefined)
+  const [goalId, setGoalId] = useState<string | undefined | null>(undefined)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   // const [dueDate, setDueDate] = useState<string | undefined>(undefined)
@@ -93,8 +93,8 @@ export default function TaskModal({
     desc: (v?: string) => (v ?? '').trim(),
     // Compare ISO strings; convert local input to ISO for a fair comparison
     dateIsoFromLocal: (local: string) => toIsoOrUndefined(local) ?? '',
-    priority: (p: TaskPriority) => p, // already TitleCase
-    goal: (g?: string) => g ?? '',
+    priority: (p: TaskPriority) => p,
+    goal: (g?: string | null) => g ?? '',
   }
 
   const isFormChanged =
@@ -160,7 +160,7 @@ export default function TaskModal({
       description?: string
       dueDate?: string
       priority: TaskPriority
-      goal?: string
+      goal?: string | null
     }) => updateTask(task.id, task),
     onMutate: async (updated) => {
       await queryClient.cancelQueries({ queryKey: ['tasks'] })
@@ -434,8 +434,8 @@ function GoalDropdown({
   setGoalId,
   type,
 }: {
-  goalId: string | undefined
-  setGoalId: (value: string | undefined) => void
+  goalId: string | undefined | null
+  setGoalId: (value: string | undefined | null) => void
   type: 'create' | 'edit' | 'view'
 }) {
   const { data: goals, isLoading: isFetchingGoals } = useQuery({
@@ -452,7 +452,7 @@ function GoalDropdown({
           value={
             goalId
               ? goals?.find((g) => g._id === goalId)?.title || ''
-              : 'Select goal'
+              : 'Not linked to any goal'
           }
           readOnly
           className="cursor-pointer text-left"
@@ -469,11 +469,23 @@ function GoalDropdown({
             <DropdownMenuLabel>Select Goal</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup
-              value={goals?.find((g) => g._id === goalId)?.title}
-              onValueChange={(value) =>
-                setGoalId(goals?.find((g) => g.title === value)?._id)
+              value={
+                goalId ? goals?.find((g) => g._id === goalId)?.title : 'none'
               }
+              onValueChange={(value) => {
+                if (value === 'none') {
+                  setGoalId(null)
+                } else {
+                  setGoalId(goals?.find((g) => g.title === value)?._id)
+                }
+              }}
             >
+              <DropdownMenuRadioItem value="none">
+                <span className="flex items-center">
+                  <span className="ml-2">Not linked to any goal</span>
+                </span>
+              </DropdownMenuRadioItem>
+              <DropdownMenuSeparator />
               {goals?.map((taskPriority) => (
                 <DropdownMenuRadioItem
                   key={taskPriority._id}

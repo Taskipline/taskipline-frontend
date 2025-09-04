@@ -7,7 +7,7 @@ export interface Task {
   dueDate?: string // ISO string
   priority: TaskPriority
   isCompleted: boolean
-  goal?: string // goal id (optional)
+  goal?: string | null
 }
 
 export interface CreateTaskPayload {
@@ -15,7 +15,7 @@ export interface CreateTaskPayload {
   description?: string
   dueDate?: string
   priority: TaskPriority
-  goal?: string
+  goal?: string | null
 }
 
 export interface UpdateTaskPayload {
@@ -24,7 +24,7 @@ export interface UpdateTaskPayload {
   dueDate?: string
   priority?: TaskPriority
   isCompleted?: boolean
-  goal?: string
+  goal?: string | null
 }
 
 export interface ApiTask {

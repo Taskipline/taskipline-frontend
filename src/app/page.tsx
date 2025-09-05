@@ -52,22 +52,19 @@ export default function Home() {
             <Title text="What inspired this platform?" type="sub-heading" />
             <div className="grid gap-2">
               <p className="font-normal text-muted-foreground text-left">
-                I started this project to solve my own productivity challenges.
-                I needed a platform to really help me stay organized and
-                disciplined and to also give me a reason/desire to keep
-                revisiting my goals and tasks. There were these two books I read
-                &apos;Atomic Habits by James Clear&apos; and &apos;The power of
-                habits by Charles Duhigg&apos;. They both emphasized the
-                importance of habits and how small changes can lead to
-                remarkable results.
+                I started Taskipline to tackle my own productivity struggles. I
+                craved a tool that would keep me organized, disciplined, and
+                motivated to revisit my goals and tasks regularly. Inspired by
+                &apos;Atomic Habits&apos; by James Clear and &apos;The Power of
+                Habit&apos; by Charles Duhigg, I realized how small, consistent
+                changes can drive remarkable results.
               </p>
               <p className="font-normal text-muted-foreground text-left">
-                So I decided to build a platform that would really help with
-                that by helping set goals I can keep coming back to from time to
-                time, have tasks under each goal or independently, have notes to
-                reflect on my progress and a calendar to organize my schedule. I
-                also wanted to gamify the experience with streaks and
-                leaderboards to keep me motivated.
+                That&apos;s why I built this platform: to help set meaningful
+                goals, manage tasks (linked or standalone), capture reflections
+                in notes, organize schedules with a calendar, and gamify the
+                experience through streaks and leaderboards—all to foster
+                lasting habits and productivity.
               </p>
             </div>
           </section>
@@ -80,11 +77,12 @@ export default function Home() {
                 about productivity and discipline. Feel free to reach out to me
                 at{' '}
                 <Link
-                  href="mailto:taskipline@emmy-akintz.tech"
+                  href="mailto:emzyakints2005@gmail.com"
                   className="text-primary underline"
                 >
-                  taskipline@emmy-akintz.tech
+                  emzyakints2005@gmail.com
                 </Link>
+                .
               </p>
               <p className="font-normal text-muted-foreground text-left">
                 You can also follow me on{' '}
@@ -120,36 +118,36 @@ const taskiplinePerks = [
     icon: <List className="size-4" />,
     text: 'Tasks',
     description:
-      'You can manage your long and short term tasks efficiently. You can also set priorities and deadlines for your tasks and add allocate them to specific goals.',
+      'Efficiently manage short and long-term tasks. Set priorities, deadlines, and allocate tasks to specific goals for streamlined organization.',
   },
   {
     icon: <Goal className="size-4" />,
     text: 'Goals',
     description:
-      'You can set and choose whether to have tasks under each goal. You can also track the progress of your goals by the completion rate of the tasks under each goal.',
+      'Define clear goals and optionally link tasks to them. Track progress through completion rates and stay focused on what matters most.',
   },
   {
     icon: <Calendar1 className="size-4" />,
     text: 'Calendar',
     description:
-      'You can organize your schedule with the calendar feature. You can view your tasks, goals and even notes on a daily, weekly, or monthly basis.',
+      'Organize your schedule seamlessly. View tasks, goals, and notes in daily, weekly, or monthly layouts for comprehensive planning.',
   },
   {
     icon: <NotebookPen className="size-4" />,
     text: 'Notes',
     description:
-      'You can have reflections and note them down for future reference. You can also jot down important information.', //You can also link notes to specific tasks or goals for better context
+      'Capture reflections and important information for future reference. Link notes to specific tasks or goals for enhanced context and productivity.',
   },
   {
     icon: <Gamepad2 className="size-4" />,
     text: 'Gamification',
     description:
-      'You can stay motivated with streaks and leaderboard systems that motivates you to want to achieve your goals and complete your tasks overtime.',
+      'Stay motivated with streaks and leaderboards that encourage you to achieve goals and complete tasks over time.',
   },
   {
     icon: <MailPlusIcon className="size-4" />,
-    text: 'Email to tasks',
+    text: 'Email to Tasks',
     description:
-      'You can connect your email to the platform and be rest assured every new email you get is converted to a task automatically.',
+      'Connect your email to automatically convert new messages into tasks, ensuring nothing slips through the cracks.',
   },
 ]

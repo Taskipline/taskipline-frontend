@@ -10,11 +10,17 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Eye, EyeOff, Loader2, MailCheck } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
-import { signup } from '@/services/authService'
+import { signInWithGoogle, signup } from '@/services/authService'
 import { ApiError } from '@/lib/errors'
 import { FaGoogle, FaGithub } from 'react-icons/fa'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/stores/authStore'
+import { useGoogleLogin } from '@react-oauth/google'
 
 export default function Signup() {
+  const router = useRouter()
+  const { setAuth } = useAuthStore()
+
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -49,6 +55,43 @@ export default function Signup() {
     }
     mutation.mutate({ firstName, lastName, email, password })
   }
+
+  const signInWithGoogleMutation = useMutation({
+    mutationFn: signInWithGoogle,
+    onSuccess: (data) => {
+      setAuth(data.accessToken, data.user)
+      notify('success', 'Google login successful!')
+      router.push('/dashboard')
+    },
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        notify('error', error.message)
+      } else {
+        notify('error', 'An unexpected error occurred.')
+      }
+    },
+  })
+
+  const googleAuth = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      console.log('Google auth success:', tokenResponse)
+
+      try {
+        signInWithGoogleMutation.mutate({
+          accessToken: tokenResponse.access_token,
+        })
+      } catch (error) {
+        console.error('Error processing Google tokens:', error)
+        notify('error', 'Failed to process Google authentication.')
+      }
+    },
+    flow: 'implicit',
+    onError: (error) => {
+      console.error('Google login error details:', error)
+      notify('error', `Google sign-in failed: ${error.toString()}`)
+    },
+    scope: 'email profile openid',
+  })
 
   if (mutation.isSuccess) {
     return (
@@ -148,22 +191,35 @@ export default function Signup() {
             'Create Account'
           )}
         </Button>
-        <Label className="mx-auto font-normal">Or Sign Up With</Label>
-        <div className="grid grid-cols-2 gap-2 justify-between">
-          <Button className="rounded-[20px]" variant="secondary" asChild>
-            <Link href="#google-sign-in">
-              <FaGoogle />
-              Google
-            </Link>
-          </Button>
-          <Button className="rounded-[20px]" variant="secondary" asChild>
-            <Link href="#github-sign-in">
-              <FaGithub />
-              Github
-            </Link>
-          </Button>
-        </div>
       </form>
+      <Label className="mx-auto font-normal">Or Sign Up With</Label>
+      <div className="grid grid-cols-2 gap-2 justify-between w-sm mx-auto">
+        <Button
+          className="rounded-[20px] cursor-pointer"
+          variant="secondary"
+          onClick={() => googleAuth()}
+          type="button"
+          disabled={signInWithGoogleMutation.isPending}
+        >
+          <FaGoogle />
+          {signInWithGoogleMutation.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            'Google'
+          )}
+        </Button>
+        <Button
+          className="rounded-[20px] cursor-pointer"
+          variant="secondary"
+          type="button"
+          asChild
+        >
+          <Link href="#github-sign-in">
+            <FaGithub />
+            Github
+          </Link>
+        </Button>
+      </div>
     </div>
   )
 }

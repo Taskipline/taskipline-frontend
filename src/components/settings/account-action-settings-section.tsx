@@ -5,7 +5,7 @@ import Title from '../title'
 import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/stores/authStore'
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Dialog,
   DialogClose,
@@ -16,6 +16,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/dialog'
+import { googleLogout } from '@react-oauth/google'
+import { signOut } from '@/services/authService'
+import { Loader2 } from 'lucide-react'
 
 export default function AccountActionSettingsSection() {
   return (
@@ -31,17 +34,28 @@ function LogoutDialog() {
   const { logout } = useAuthStore()
   const queryClient = useQueryClient()
 
-  const handleSignout = () => {
-    // 1. Clear the authentication accessToken and user data from the client
-    logout()
+  const signOutMutation = useMutation({
+    mutationFn: signOut,
+    onSuccess: () => {
+      // 1. Revoke Google OAuth session
+      googleLogout()
 
-    // 2. Clear all cached API data to ensure a clean state for the next user
-    queryClient.clear()
+      // 2. Clear local auth state
+      logout()
 
-    // 3. Notify the user and redirect to the signin page
-    notify('success', 'You have been signed out.')
-    router.push('/signin')
-  }
+      // 3. Clear all cached API data
+      queryClient.clear()
+
+      notify('success', 'You have been signed out successfully')
+
+      // 4. Redirect to signin page
+      router.push('/signin')
+    },
+    onError: (error) => {
+      console.error('Error signing out:', error)
+      notify('error', 'There was a problem signing out')
+    },
+  })
 
   return (
     <Dialog>
@@ -64,15 +78,24 @@ function LogoutDialog() {
           <Button
             variant="destructive"
             className="w-fit rounded-[20px] cursor-pointer"
-            onClick={handleSignout}
+            onClick={() => signOutMutation.mutate()}
+            disabled={signOutMutation.isPending}
           >
-            Signout
+            {signOutMutation.isPending ? (
+              <span className="flex items-center">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing out...
+              </span>
+            ) : (
+              'Signout'
+            )}
           </Button>
           <DialogClose asChild>
             <Button
               type="button"
               variant="secondary"
               className="rounded-[20px] cursor-pointer"
+              disabled={signOutMutation.isPending}
             >
               Close
             </Button>

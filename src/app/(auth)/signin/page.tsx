@@ -15,7 +15,6 @@ import { signin, signInWithGoogle } from '@/services/authService'
 import { ApiError } from '@/lib/errors'
 import { FaGoogle, FaGithub } from 'react-icons/fa'
 import { useGoogleLogin } from '@react-oauth/google'
-import { redirectUri } from '@/lib/env'
 
 export default function Signin() {
   const router = useRouter()
@@ -68,23 +67,24 @@ export default function Signin() {
   }
 
   const googleAuth = useGoogleLogin({
-    onSuccess: (codeResponse) => {
+    onSuccess: async (tokenResponse) => {
+      console.log('Google auth success:', tokenResponse)
+
       try {
         signInWithGoogleMutation.mutate({
-          code: codeResponse.code,
+          accessToken: tokenResponse.access_token,
         })
       } catch (error) {
-        console.error('Error with Google auth:', error)
+        console.error('Error processing Google tokens:', error)
         notify('error', 'Failed to process Google authentication.')
       }
     },
-    flow: 'auth-code',
-    redirect_uri: redirectUri,
+    flow: 'implicit',
     onError: (error) => {
-      console.error('Google login error:', error)
-      notify('error', 'Google sign-in failed.')
+      console.error('Google login error details:', error)
+      notify('error', `Google sign-in failed: ${error.toString()}`)
     },
-    scope: 'openid profile email',
+    scope: 'email profile openid',
   })
 
   return (
@@ -137,35 +137,35 @@ export default function Signin() {
             'Sign in'
           )}
         </Button>
-        <Label className="mx-auto font-normal">Or Sign In With</Label>
-        <div className="grid grid-cols-2 gap-2 justify-between">
-          <Button
-            className="rounded-[20px] cursor-pointer"
-            variant="secondary"
-            onClick={() => googleAuth()}
-            type="button"
-            disabled={signInWithGoogleMutation.isPending}
-          >
-            <FaGoogle />
-            {signInWithGoogleMutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              'Google'
-            )}
-          </Button>
-          <Button
-            className="rounded-[20px] cursor-pointer"
-            variant="secondary"
-            type="button"
-            asChild
-          >
-            <Link href="#github-sign-in">
-              <FaGithub />
-              Github
-            </Link>
-          </Button>
-        </div>
       </form>
+      <Label className="mx-auto font-normal">Or Sign In With</Label>
+      <div className="grid grid-cols-2 gap-2 justify-between w-sm mx-auto">
+        <Button
+          className="rounded-[20px] cursor-pointer"
+          variant="secondary"
+          onClick={() => googleAuth()}
+          type="button"
+          disabled={signInWithGoogleMutation.isPending}
+        >
+          <FaGoogle />
+          {signInWithGoogleMutation.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            'Google'
+          )}
+        </Button>
+        <Button
+          className="rounded-[20px] cursor-pointer"
+          variant="secondary"
+          type="button"
+          asChild
+        >
+          <Link href="#github-sign-in">
+            <FaGithub />
+            Github
+          </Link>
+        </Button>
+      </div>
     </div>
   )
 }

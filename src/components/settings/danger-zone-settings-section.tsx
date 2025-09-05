@@ -21,6 +21,7 @@ import { deleteAccount } from '@/services/userService'
 import { ApiError } from '@/lib/errors'
 import { CustomInput } from '../ui/input'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { googleLogout } from '@react-oauth/google'
 
 export default function DangerZoneSettingsSection() {
   return (
@@ -42,6 +43,7 @@ function DeleteAccountDialog() {
   const mutation = useMutation({
     mutationFn: deleteAccount,
     onSuccess: () => {
+      googleLogout()
       logout()
       queryClient.clear()
       notify('success', 'Your account has been successfully deleted.')

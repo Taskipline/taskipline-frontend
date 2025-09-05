@@ -36,5 +36,5 @@ export interface ResetPasswordCredentials {
 }
 
 export type GoogleAuthPayload = {
-  code: string
+  accessToken: string
 }

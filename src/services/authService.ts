@@ -66,9 +66,14 @@ export const resetPassword = async (
 export const signInWithGoogle = async (
   payload: GoogleAuthPayload
 ): Promise<LoginResponse> => {
-  const response = await apiClient.post<LoginResponse>(
-    '/auth/google/callback',
-    payload
-  )
+  const response = await apiClient.post<LoginResponse>('/auth/google', payload)
   return response.data
+}
+
+export const signOut = async (): Promise<void> => {
+  try {
+    await apiClient.post('/auth/signout')
+  } catch (error) {
+    console.error('Error signing out on server:', error)
+  }
 }

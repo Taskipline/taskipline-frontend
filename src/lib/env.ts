@@ -10,3 +10,4 @@ export const githubClientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID
 export const githubClientSecret = process.env.NEXT_PUBLIC_GITHUB_SECRET
 export const githubRedirectPath = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_PATH
 export const githubRedirectUri = `${siteUrl}${githubRedirectPath}`
+export const githubState = process.env.NEXT_PUBLIC_GITHUB_STATE

@@ -7,7 +7,7 @@ import Title from '@/components/title'
 import { notify } from '@/utilities/common'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useMutation } from '@tanstack/react-query'
@@ -141,87 +141,89 @@ export default function Signin() {
   }, [code, error, state, signInWithGithubMutation, router])
 
   return (
-    <div className="grid gap-6">
-      <Title text="Welcome back" type="auth" textAlignment="text-center" />
-      <form onSubmit={handleSignin} className="grid gap-4 w-sm mx-auto">
-        <CustomInput
-          label="Email"
-          id="email"
-          htmlFor="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          required
-          autoComplete="email"
-          autoFocus
-          disabled={mutation.isPending}
-        />
-        <CustomInput
-          label="Password"
-          id="password"
-          htmlFor="password"
-          placeholder="Enter your password"
-          type={showPassword ? 'text' : 'password'}
-          rightIcon={showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
-          onRightIconClick={togglePassword}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          autoComplete="current-password"
-          disabled={mutation.isPending}
-        />
-        <Label>
-          <Link
-            href="/forgot-password"
-            className="text-primary font-normal underline italic"
+    <Suspense>
+      <div className="grid gap-6">
+        <Title text="Welcome back" type="auth" textAlignment="text-center" />
+        <form onSubmit={handleSignin} className="grid gap-4 w-sm mx-auto">
+          <CustomInput
+            label="Email"
+            id="email"
+            htmlFor="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            required
+            autoComplete="email"
+            autoFocus
+            disabled={mutation.isPending}
+          />
+          <CustomInput
+            label="Password"
+            id="password"
+            htmlFor="password"
+            placeholder="Enter your password"
+            type={showPassword ? 'text' : 'password'}
+            rightIcon={showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+            onRightIconClick={togglePassword}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="current-password"
+            disabled={mutation.isPending}
+          />
+          <Label>
+            <Link
+              href="/forgot-password"
+              className="text-primary font-normal underline italic"
+            >
+              Forgot password?
+            </Link>
+          </Label>
+          <Button
+            type="submit"
+            className="rounded-[20px] max-w-sm cursor-pointer"
+            disabled={mutation.isPending || !email || !password}
           >
-            Forgot password?
-          </Link>
-        </Label>
-        <Button
-          type="submit"
-          className="rounded-[20px] max-w-sm cursor-pointer"
-          disabled={mutation.isPending || !email || !password}
-        >
-          {mutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            'Sign in'
-          )}
-        </Button>
-      </form>
-      <Label className="mx-auto font-normal">Or Sign In With</Label>
-      <div className="grid grid-cols-2 gap-2 justify-between w-sm mx-auto">
-        <Button
-          className="rounded-[20px] cursor-pointer"
-          variant="secondary"
-          onClick={() => googleAuth()}
-          type="button"
-          disabled={signInWithGoogleMutation.isPending}
-        >
-          <FaGoogle />
-          {signInWithGoogleMutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            'Google'
-          )}
-        </Button>
-        <Button
-          className="rounded-[20px] cursor-pointer"
-          variant="secondary"
-          onClick={() => githubAuth()}
-          type="button"
-          disabled={signInWithGithubMutation.isPending}
-        >
-          <FaGithub />
-          {signInWithGithubMutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            'Github'
-          )}
-        </Button>
+            {mutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              'Sign in'
+            )}
+          </Button>
+        </form>
+        <Label className="mx-auto font-normal">Or Sign In With</Label>
+        <div className="grid grid-cols-2 gap-2 justify-between w-sm mx-auto">
+          <Button
+            className="rounded-[20px] cursor-pointer"
+            variant="secondary"
+            onClick={() => googleAuth()}
+            type="button"
+            disabled={signInWithGoogleMutation.isPending}
+          >
+            <FaGoogle />
+            {signInWithGoogleMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              'Google'
+            )}
+          </Button>
+          <Button
+            className="rounded-[20px] cursor-pointer"
+            variant="secondary"
+            onClick={() => githubAuth()}
+            type="button"
+            disabled={signInWithGithubMutation.isPending}
+          >
+            <FaGithub />
+            {signInWithGithubMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              'Github'
+            )}
+          </Button>
+        </div>
       </div>
-    </div>
+    </Suspense>
   )
 }

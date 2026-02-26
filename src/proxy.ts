@@ -34,7 +34,7 @@ function isAuthenticated(request: NextRequest): boolean {
   }
 }
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
   const authed = isAuthenticated(request)
 

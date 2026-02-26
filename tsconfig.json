@@ -27,7 +27,8 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    // "ignoreDeprecations" removed due to invalid value
   },
   "include": [
     "next-env.d.ts",

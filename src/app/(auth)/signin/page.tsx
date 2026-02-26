@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { CustomInput } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,7 +22,7 @@ import { FaGoogle, FaGithub } from 'react-icons/fa'
 import { useGoogleLogin } from '@react-oauth/google'
 import { githubClientId, githubRedirectUri, githubState } from '@/lib/env'
 
-export default function Signin() {
+function SigninInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { setAuth } = useAuthStore()
@@ -223,5 +224,13 @@ export default function Signin() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function Signin() {
+  return (
+    <Suspense fallback={null}>
+      <SigninInner />
+    </Suspense>
   )
 }

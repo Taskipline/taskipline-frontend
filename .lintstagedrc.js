@@ -1,9 +1,9 @@
 import path from 'path'
 
 const buildEslintCommand = (filenames) =>
-  `next lint --fix --file ${filenames
+  `eslint --fix ${filenames
     .map((f) => path.relative(process.cwd(), f))
-    .join(' --file ')}`
+    .join(' ')}`
 
 const buildTypeCheckCommand = (filenames) => {
   const tsFiles = filenames.filter((f) => f.match(/\.(ts|tsx)$/))
@@ -17,8 +17,24 @@ const buildTypeCheckCommand = (filenames) => {
 }
 
 const config = {
-  '*.{js,jsx,ts,tsx}': ['prettier --write', buildEslintCommand],
-  '*.{ts,tsx}': [buildTypeCheckCommand],
+  '*.{js,jsx,ts,tsx}': [
+    'prettier --write',
+    (filenames) =>
+      buildEslintCommand(
+        filenames.filter(
+          (f) =>
+            !f.match(
+              /next\.config\.ts|\.eslintrc\.js|\.prettierrc\.js|jest\.config\.ts|postcss\.config\.mjs|tailwind\.config\.js/
+            )
+        )
+      ),
+  ],
+  '*.{ts,tsx}': [
+    (filenames) =>
+      buildTypeCheckCommand(
+        filenames.filter((f) => !f.match(/next\.config\.ts|jest\.config\.ts/))
+      ),
+  ],
 }
 
 export default config

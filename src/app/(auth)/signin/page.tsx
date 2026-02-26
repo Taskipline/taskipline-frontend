@@ -1,29 +1,41 @@
 'use client'
 
+import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { CustomInput } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Title from '@/components/title'
 import { notify } from '@/utilities/common'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useMutation } from '@tanstack/react-query'
-import { signin, signInWithGoogle } from '@/services/authService'
+import {
+  signin,
+  signInWithGithub,
+  signInWithGoogle,
+} from '@/services/authService'
 import { ApiError } from '@/lib/errors'
 import { FaGoogle, FaGithub } from 'react-icons/fa'
 import { useGoogleLogin } from '@react-oauth/google'
+import { githubClientId, githubRedirectUri, githubState } from '@/lib/env'
 
-export default function Signin() {
+function SigninInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { setAuth } = useAuthStore()
+
+  const code = searchParams.get('code')
+  const state = searchParams.get('state')
+  const error = searchParams.get('error')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const togglePassword = () => setShowPassword(!showPassword)
+  const codeProcessed = useRef(false)
 
   const mutation = useMutation({
     mutationFn: signin,
@@ -46,6 +58,22 @@ export default function Signin() {
     onSuccess: (data) => {
       setAuth(data.accessToken, data.user)
       notify('success', 'Google login successful!')
+      router.push('/dashboard')
+    },
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        notify('error', error.message)
+      } else {
+        notify('error', 'An unexpected error occurred.')
+      }
+    },
+  })
+
+  const signInWithGithubMutation = useMutation({
+    mutationFn: signInWithGithub,
+    onSuccess: (data) => {
+      setAuth(data.accessToken, data.user)
+      notify('success', 'Github login successful!')
       router.push('/dashboard')
     },
     onError: (error) => {
@@ -86,6 +114,32 @@ export default function Signin() {
     },
     scope: 'email profile openid',
   })
+
+  const githubAuth = () => {
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${encodeURIComponent(githubRedirectUri)}&scope=read:user user:email&state=${githubState}`
+    window.location.href = authUrl
+  }
+
+  useEffect(() => {
+    if (code && !codeProcessed.current) {
+      console.log('GitHub OAuth params:', { code, state, error })
+
+      if (error) {
+        notify('error', `GitHub auth error: ${error}`)
+        // router.push('/signin')
+        return
+      }
+
+      if (state !== githubState) {
+        notify('error', 'Invalid state parameter')
+        // router.push('/signin')
+        return
+      }
+
+      codeProcessed.current = true
+      signInWithGithubMutation.mutate({ code })
+    }
+  }, [code, error, state, signInWithGithubMutation, router])
 
   return (
     <div className="grid gap-6">
@@ -157,15 +211,26 @@ export default function Signin() {
         <Button
           className="rounded-[20px] cursor-pointer"
           variant="secondary"
+          onClick={() => githubAuth()}
           type="button"
-          asChild
+          disabled={signInWithGithubMutation.isPending}
         >
-          <Link href="#github-sign-in">
-            <FaGithub />
-            Github
-          </Link>
+          <FaGithub />
+          {signInWithGithubMutation.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            'Github'
+          )}
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function Signin() {
+  return (
+    <Suspense fallback={null}>
+      <SigninInner />
+    </Suspense>
   )
 }

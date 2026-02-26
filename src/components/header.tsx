@@ -5,7 +5,9 @@ import { Button } from './ui/button'
 import TaskiplineLogo from './ui/Icons/taskipline-logo'
 import { ModeToggle } from './mode-toggle'
 import { usePathname } from 'next/navigation'
-import WaitlistModal from './waitlist/waitlist-modal'
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
+import { Menu } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
 
 export default function Header({ auth = false }: { auth?: boolean }) {
   const pathName = usePathname()
@@ -60,17 +62,53 @@ export default function Header({ auth = false }: { auth?: boolean }) {
             >
               Resources
             </Link> */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <p className="text-sm font-medium transition-colors hover:text-primary cursor-pointer">
+                  Product
+                </p>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Under construction!</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <p className="text-sm font-medium transition-colors hover:text-primary cursor-pointer">
+                  Prices
+                </p>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Under construction!</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <p className="text-sm font-medium transition-colors hover:text-primary cursor-pointer">
+                  Resources
+                </p>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Under construction!</p>
+              </TooltipContent>
+            </Tooltip>
           </nav>
-          <WaitlistModal ctaSize="default" />
-          {/* <Button asChild>
-            <Link href="/signin">Sign In</Link>
-          </Button> */}
-          <ModeToggle />
+          {/* <WaitlistModal ctaSize="default" /> */}
+          <div className="flex gap-2">
+            {' '}
+            <Button asChild>
+              <Link href="/signin">Sign In</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/signup">Get Started</Link>
+            </Button>
+            <ModeToggle />
+          </div>
         </div>
 
         {/* Mobile Navigation */}
         <div className="flex md:hidden gap-2">
-          {/* <Sheet>
+          <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
@@ -79,7 +117,7 @@ export default function Header({ auth = false }: { auth?: boolean }) {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <nav className="flex flex-col space-y-4 mt-4 py-8 px-4">
-                <Link
+                {/* <Link
                   href="#product"
                   className="text-sm font-medium transition-colors hover:text-primary py-2"
                 >
@@ -96,16 +134,49 @@ export default function Header({ auth = false }: { auth?: boolean }) {
                   className="text-sm font-medium transition-colors hover:text-primary py-2"
                 >
                   Resources
-                </Link>
-                <div className="pt-4">
+                </Link> */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <p className="text-sm font-medium transition-colors hover:text-primary cursor-pointer">
+                      Product
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Under construction!</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <p className="text-sm font-medium transition-colors hover:text-primary cursor-pointer">
+                      Prices
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Under construction!</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <p className="text-sm font-medium transition-colors hover:text-primary cursor-pointer">
+                      Resources
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Under construction!</p>
+                  </TooltipContent>
+                </Tooltip>
+                <div className="pt-4 grid gap-4">
                   <Button asChild className="w-full">
                     <Link href="/signin">Sign In</Link>
+                  </Button>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link href="/signup">Get Started</Link>
                   </Button>
                 </div>
               </nav>
             </SheetContent>
-          </Sheet> */}
-          <WaitlistModal ctaSize="default" />
+          </Sheet>
+          {/* <WaitlistModal ctaSize="default" /> */}
           <ModeToggle />
         </div>
       </div>

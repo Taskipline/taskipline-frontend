@@ -1,6 +1,7 @@
 import apiClient from '@/lib/apiClient'
 import {
   ForgotPasswordResponse,
+  GithubAuthPayload,
   GoogleAuthPayload,
   LoginCredentials,
   LoginResponse,
@@ -67,6 +68,13 @@ export const signInWithGoogle = async (
   payload: GoogleAuthPayload
 ): Promise<LoginResponse> => {
   const response = await apiClient.post<LoginResponse>('/auth/google', payload)
+  return response.data
+}
+
+export const signInWithGithub = async (
+  payload: GithubAuthPayload
+): Promise<LoginResponse> => {
+  const response = await apiClient.post<LoginResponse>('/auth/github', payload)
   return response.data
 }
 

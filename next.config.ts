@@ -1,9 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // eslint config removed; see https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
   // allowedDevOrigins: ['http://192.168.150.105:3000'],
   images: {
     remotePatterns: [

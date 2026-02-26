@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
   title: 'Sign In | Taskipline',
@@ -15,5 +16,9 @@ export default function SigninLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <main>{children}</main>
+  return (
+    <main>
+      <Suspense>{children}</Suspense>
+    </main>
+  )
 }
